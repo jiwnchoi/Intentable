@@ -1,4 +1,4 @@
-# Jason Choi's Web FE Boilerplate
+# Chart Tell Me!
 
 1. Yarn berry
 2. Next.js
