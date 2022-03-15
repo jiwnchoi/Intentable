@@ -1,62 +1,44 @@
 import {
-    Box,
+    GridItem,
     Text,
+    Box,
+    SimpleGrid,
     Container,
     Divider,
     FormControl,
     FormLabel,
     Grid,
-    GridItem,
     Heading,
     HStack,
     Input,
     Radio,
-    RadioGroup,
+    Flex,
     VStack,
+    Textarea,
 } from "@chakra-ui/react";
 import ChartRenderer from "./chart/ChartRenderer";
-import TableConfigureation from "./table/TableConfigureation"
+import TableConfigureation from "./table/TableConfigureation";
+import CaptionEditor from "./caption/CaptionEditor";
+import EntitySelector from "./chart/EntitySelector";
+
 const Dashboard = () => (
-    <Box p={4}>
+    <Container maxW={"8xl"} m={4}>
         <Grid
-            w="7xl"
-            h="80vh"
-            templateColumns="repeat(3, 1fr)"
-            templateRows="repeat(3, 1fr)"
+            templateColumns={{ base: "repeat(1, 1fr)", lg : "repeat(3, 1fr)" }}
             gap={8}
         >
-            <GridItem
-                rowSpan={3}
-                colSpan={1}
-                bg="white"
-                borderRadius={20}
-                boxShadow="base"
-            >   
+            <GridItem bg="white" boxShadow="base" borderRadius={20}>
                 <TableConfigureation />
             </GridItem>
-            <GridItem
-                rowSpan={2}
-                colSpan={2}
-                bg="white"
-                borderRadius={20}
-                boxShadow="base"
-                p={6}
-            >
-                <Heading fontSize="xl">Chart</Heading>
-                <ChartRenderer></ChartRenderer>
+            <GridItem bg="white" boxShadow="base" borderRadius={20}>
+                <ChartRenderer />
+                <EntitySelector />
             </GridItem>
-            <GridItem
-                rowSpan={1}
-                colSpan={2}
-                bg="white"
-                borderRadius={20}
-                boxShadow="base"
-                p={6}
-            >
-                <Heading fontSize="xl">Predicted Caption</Heading>
+            <GridItem bg="white" boxShadow="base" borderRadius={20}>
+                <CaptionEditor></CaptionEditor>
             </GridItem>
         </Grid>
-    </Box>
+    </Container>
 );
 
 export default Dashboard;

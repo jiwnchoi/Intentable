@@ -14,6 +14,7 @@ import {
     RadioGroup,
     VStack,
     Center,
+    Button,
 } from "@chakra-ui/react";
 
 import  { useState } from 'react';
@@ -36,6 +37,17 @@ const TableConfigureation = () => {
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Data Configuration</Heading>
                 <Divider />
+                <Box>
+                    <Text>Import Data</Text>
+                    <Center
+                        minH="150px"
+                        border="1px"
+                        borderColor="gray.200"
+                        borderRadius="md"
+                    >
+                        <Text color="gray.400">Click or Drop .csv File</Text>
+                    </Center>
+                </Box>
                 <FormControl>
                     <FormLabel htmlFor="title">Title</FormLabel>
                     <Input
@@ -62,17 +74,22 @@ const TableConfigureation = () => {
                         </HStack>
                     </RadioGroup>
                 </FormControl>
-                <Box>
-                    <Text>Import Data</Text>
-                    <Box minH="150px" border="1px" borderColor="gray.200" borderRadius="md">
-                        <Center>
-                            <HStack>Center</HStack>
-                        </Center>
-                    </Box>
-                </Box>
+                <FormControl>
+                    <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
+                    <RadioGroup defaultValue="grouped" id="bar-type">
+                        <HStack spacing={4}>
+                            <Radio value="grouped">Grouped</Radio>
+                            <Radio value="stacked">Stacked</Radio>
+                        </HStack>
+                    </RadioGroup>
+                </FormControl>
+                <Button colorScheme="blue" variant="outline">
+                    Load Random Demo
+                </Button>
+                <Button colorScheme="blue">Draw Chart</Button>
             </VStack>
         </Box>
-    )
+    );
 };
 
 export default TableConfigureation;

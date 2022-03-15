@@ -4,6 +4,7 @@ import {
     Heading,
     Stack,
     Text,
+    Divider,
     Flex,
     Link,
     useColorModeValue,
@@ -17,7 +18,7 @@ export default function Navbar() {
         >
             <Container
                 as={Stack}
-                maxW={"7xl"}
+                maxW={"8xl"}
                 py={4}
                 direction={"row"}
                 justify={"space-between"}
@@ -27,6 +28,7 @@ export default function Navbar() {
                 <Heading size={"md"}>📊 Chart Tell Me!</Heading>
                 <Text>Github</Text>
             </Container>
+            <Divider />
         </Box>
     );
 }

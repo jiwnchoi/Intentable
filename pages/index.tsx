@@ -1,21 +1,21 @@
 import type { NextPage } from 'next'
-import { Container, Center, Divider } from '@chakra-ui/react';
+import { Container, Center, Divider, Box } from '@chakra-ui/react';
 import Navbar from '../src/Navbar';
 import Footer from '../src/Footer'
 import Dashboard from '../src/Dashboard'
 
 const Home: NextPage = () => {
   return (
-    <>
-      <Navbar />
-      <Divider />
-      <Center bg="gray.50">
-        <Dashboard></Dashboard>
-      </Center>
-      <Divider /> 
-      <Footer></Footer>
-    </>
-  )
+      <Box minHeight="100vh" bg="gray.50" pb={200}>
+          <Navbar />
+          <Divider />
+          <Center>
+              <Dashboard></Dashboard>
+          </Center>
+          <Divider />
+          <Footer position="absolute" bottom={0}></Footer>
+      </Box>
+  );
 }
 
 export default Home
