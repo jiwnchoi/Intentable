@@ -9,9 +9,10 @@ import {
     Flex,
 } from "@chakra-ui/react";
 
-export default function Footer({position, bottom} : any) {
+export default function Footer({ position, bottom }: any) {
     return (
         <Box
+            marginLeft={4}
             position={position}
             left={0}
             right={0}
@@ -29,16 +30,27 @@ export default function Footer({position, bottom} : any) {
                 alignItems={"left"}
                 spacing={1}
             >
-                <Flex>
-                    <Text fontFamily="Rajdhani" fontWeight="bold" fontSize="xl">
-                        IDC
-                    </Text>
-                    <Text fontFamily="Rajdhani" fontSize="xl">
-                        Lab
-                    </Text>
-                </Flex>
-                <Text>Sungkyunkwan University</Text>
-                <Text>College of Computing and Informatics</Text>
+                <Link href="https://idclab.skku.edu">
+                    <Flex>
+                        <Text
+                            fontFamily="Rajdhani"
+                            fontWeight="bold"
+                            fontSize="xl"
+                        >
+                            IDC
+                        </Text>
+                        <Text fontFamily="Rajdhani" fontSize="xl">
+                            Lab
+                        </Text>
+                    </Flex>
+                </Link>
+
+                <Link href="https://skkuu.edu">
+                    <Text>Sungkyunkwan University</Text>
+                </Link>
+                <Link href="https://cs.skku.edu">
+                    <Text>College of Computing and Informatics</Text>
+                </Link>
             </Container>
         </Box>
     );
