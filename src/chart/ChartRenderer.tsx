@@ -113,8 +113,6 @@ const ChartRenderer = (props: any) => {
                 <VegaLite
                     spec={vegaSpec}
                     data={{ table: vegaData }}
-                    // width={props.width}
-                    // height={props.height}
                 />
             </VStack>
         </Box>

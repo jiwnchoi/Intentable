@@ -22,7 +22,7 @@ import CaptionEditor from "./caption/CaptionEditor";
 import EntitySelector from "./chart/EntitySelector";
 
 const Dashboard = () => (
-    <Container maxW={"8xl"} m={4}>
+    <Container maxW={"full"} m={4}>
         <Grid
             templateColumns={{ base: "repeat(1, 1fr)", lg : "repeat(4, 1fr)" }}
             gap={8}
@@ -30,7 +30,7 @@ const Dashboard = () => (
             <GridItem bg="white" boxShadow="base" borderRadius={20}>
                 <TableConfigureation />
             </GridItem>
-            <GridItem bg="white" boxShadow="base" borderRadius={20} maxW={'4xl'} colSpan={{base : 1, lg : 2}}>
+            <GridItem bg="white" boxShadow="base" borderRadius={20} maxW={'full'} colSpan={{base : 1, lg : 2}}>
                 <ChartRenderer />
                 <EntitySelector />
             </GridItem>

@@ -12,7 +12,6 @@ const Home: NextPage = () => {
             <Center>
                 <Dashboard></Dashboard>
             </Center>
-            <Divider />
             <Footer position="absolute" bottom={0}></Footer>
         </Box>
     );

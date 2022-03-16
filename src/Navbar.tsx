@@ -18,7 +18,7 @@ export default function Navbar() {
         >
             <Container
                 as={Stack}
-                maxW={"8xl"}
+                maxW={"full"}
                 py={4}
                 direction={"row"}
                 justify={"space-between"}
