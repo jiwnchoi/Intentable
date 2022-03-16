@@ -16,21 +16,111 @@ import {
     Center,
     Button,
 } from "@chakra-ui/react";
+import axios from "axios";
 
-import  { useState } from 'react';
+import { useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+    tableTitleState,
+    tableValueInfoState,
+    tableDataState,
+    chartTypeState,
+    rowTypeState,
+    barGroupedState,
+} from "../../states";
 
+import type { table } from "../../states";
 
+function csvToJSON(csvString: string) {
+    const lines = csvString.split("\n");
+    const result = [];
+    const headers: string[] = lines[0].split(",");
+    if (headers[0] == "") headers[0] = "characteristic";
+    if (headers[1] == "" || headers[1] == " ") headers[1] = "value";
 
-const TableConfigureation = () => {
-    
-    const fileTypes = [ "CSV" ]
-    const [file, setFile] = useState(null)
-    const handleChange = (file : any) => {
-        console.log(file)
-        setFile(file)
+    for (let i = 1; i < lines.length - 1; i++) {
+        const obj: any = {};
+        const currentline = lines[i].split(",");
+
+        for (let j = 0; j < headers.length; j++) {
+            if (j) {
+                obj[headers[j]] = Number(currentline[j]);
+            } else {
+                obj[headers[j]] = currentline[j];
+            }
+        }
+
+        result.push(obj);
     }
 
+    return result;
+}
 
+type fetchDemo = {
+    title: string;
+    value_info: string;
+    chart_type: string;
+    row_type: string;
+    table: string;
+};
+
+const TableConfigureation = () => {
+    const fileTypes = ["CSV"];
+
+    const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
+    const [valueInformation, setValueInformation] =
+        useRecoilState(tableValueInfoState);
+    const [tableData, setTableData] = useRecoilState(tableDataState);
+    const [chartType, setChartType] = useRecoilState(chartTypeState);
+    const [rowType, setRowType] = useRecoilState(rowTypeState);
+    const [barGrouped, setBarGrouped] = useRecoilState(barGroupedState);
+    const [columnNumber, setColumnNumber] = useState(2);
+
+    async function handleFetch() {
+        const get = await axios.get("http://localhost:5000/demo");
+        const data: fetchDemo = get.data;
+
+        setTableTitle(data.title);
+        setValueInformation(data.value_info);
+        setRowType(data.row_type);
+        if (data.chart_type == "<simplebar>") {
+            setChartType("bar");
+        } else if (data.chart_type.includes("line")) {
+            setChartType("line");
+        } else if (data.chart_type.includes("pie")) {
+            setChartType("arc");
+        } else if (data.chart_type == "<groupedbar>") {
+            setChartType("bar");
+            setBarGrouped(true);
+        } else if (data.chart_type == "<stackedbar") {
+            setChartType("bar");
+            setBarGrouped(false);
+        }
+        const tmpTable = csvToJSON(data.table);
+        const tmpColumnNumber = Object.keys(tmpTable[0]).length;
+        console.log("HELLO!");
+        console.log(tmpTable);
+        console.log(tmpColumnNumber);
+
+        if (tmpColumnNumber > 2) {
+            const longForm: table[] = [];
+            for (let i = 0; i < tmpTable.length; i++) {
+                for (let j = 1; j < tmpColumnNumber; j++) {
+                    longForm.push({
+                        characteristic: tmpTable[i].characteristic,
+                        value: tmpTable[i][Object.keys(tmpTable[i])[j]],
+                        group: Object.keys(tmpTable[i])[j],
+                    });
+                }
+            }
+            console.log(longForm);
+            setTableData(longForm);
+            setColumnNumber(3);
+        } else {
+            setTableData(tmpTable);
+            setColumnNumber(2);
+        }
+    }
 
     return (
         <Box p={6}>
@@ -53,6 +143,8 @@ const TableConfigureation = () => {
                     <Input
                         id="title"
                         placeholder="e.g. Number of monthly active Facebook users worldwide as of 4th quarter 2021"
+                        onChange={(e) => setTableTitle(e.target.value)}
+                        value={tableTitle}
                     />
                 </FormControl>
                 <FormControl>
@@ -62,31 +154,71 @@ const TableConfigureation = () => {
                     <Input
                         id="value-information"
                         placeholder="e.g. Percentage of people, Value in millions"
+                        onChange={(e) => setValueInformation(e.target.value)}
+                        value={valueInformation}
                     />
                 </FormControl>
                 <FormControl>
                     <FormLabel htmlFor="chart-type">Chart Type</FormLabel>
-                    <RadioGroup defaultValue="bar" id="chart-type">
+                    <RadioGroup value={chartType} id="chart-type">
                         <HStack spacing={4}>
-                            <Radio value="bar">Bar</Radio>
-                            <Radio value="line">Line</Radio>
-                            <Radio value="pie">Pie</Radio>
+                            <Radio
+                                value="bar"
+                                onChange={(e) => setChartType("bar")}
+                            >
+                                Bar
+                            </Radio>
+                            <Radio
+                                value="line"
+                                onChange={(e) => setChartType("line")}
+                            >
+                                Line
+                            </Radio>
+                            {columnNumber < 3 ? (
+                                <Radio
+                                    value="arc"
+                                    onChange={(e) => setChartType("arc")}
+                                >
+                                    Pie
+                                </Radio>
+                            ) : null}
                         </HStack>
                     </RadioGroup>
                 </FormControl>
-                <FormControl>
-                    <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
-                    <RadioGroup defaultValue="grouped" id="bar-type">
-                        <HStack spacing={4}>
-                            <Radio value="grouped">Grouped</Radio>
-                            <Radio value="stacked">Stacked</Radio>
-                        </HStack>
-                    </RadioGroup>
-                </FormControl>
-                <Button colorScheme="blue" variant="outline">
+                {chartType == "bar" && columnNumber > 2 ? (
+                    <FormControl>
+                        <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
+                        <RadioGroup
+                            defaultValue={barGrouped ? "grouped" : "stacked"}
+                            id="bar-type"
+                        >
+                            <HStack spacing={4}>
+                                <Radio
+                                    value="grouped"
+                                    onChange={(e) => {
+                                        setBarGrouped(true);
+                                        console.log(barGrouped);
+                                    }}
+                                >
+                                    Grouped
+                                </Radio>
+                                <Radio
+                                    value="stacked"
+                                    onChange={(e) => {
+                                        setBarGrouped(false);
+                                        console.log(barGrouped);
+                                    }}
+                                >
+                                    Stacked
+                                </Radio>
+                            </HStack>
+                        </RadioGroup>
+                    </FormControl>
+                ) : null}
+
+                <Button colorScheme="blue" onClick={handleFetch}>
                     Load Random Demo
                 </Button>
-                <Button colorScheme="blue">Draw Chart</Button>
             </VStack>
         </Box>
     );
