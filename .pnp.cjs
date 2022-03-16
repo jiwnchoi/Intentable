@@ -63,7 +63,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["swr", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
             ["vega", "npm:5.22.0"],\
-            ["vega-lite", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:5.2.0"]\
+            ["vega-lite", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:5.2.0"],\
+            ["vega-tooltip", "npm:0.28.0"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -3449,7 +3450,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["swr", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"],\
             ["vega", "npm:5.22.0"],\
-            ["vega-lite", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:5.2.0"]\
+            ["vega-lite", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:5.2.0"],\
+            ["vega-tooltip", "npm:0.28.0"]\
           ],\
           "linkType": "SOFT"\
         }]\

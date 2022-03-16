@@ -32,7 +32,8 @@
     "recoil": "^0.6.1",
     "swr": "^1.2.2",
     "vega": "^5.22.0",
-    "vega-lite": "^5.2.0"
+    "vega-lite": "^5.2.0",
+    "vega-tooltip": "^0.28.0"
   },
   "devDependencies": {
     "@types/node": "17.0.21",

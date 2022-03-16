@@ -2209,6 +2209,7 @@ __metadata:
     typescript: ^4.6.2
     vega: ^5.22.0
     vega-lite: ^5.2.0
+    vega-tooltip: ^0.28.0
   languageName: unknown
   linkType: soft
 

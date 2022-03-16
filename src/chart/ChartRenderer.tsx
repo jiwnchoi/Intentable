@@ -10,6 +10,8 @@ import {
 } from "../../states";
 import { useRecoilState } from "recoil";
 import { useState, useLayoutEffect } from "react";
+import { Handler } from "vega-tooltip";
+
 
 // function that splits sentence by half
 function splitSentence(sentence: string): string[] {
@@ -53,7 +55,7 @@ const ChartRenderer = ({ minH }: any) => {
             width: "container",
             height: 300,
             reload: size,
-            mark: chartType,
+            mark: { type : chartType, tooltip : true },
             transform: [{ sample: 10000 }],
             encoding: {
                 x: {
@@ -109,9 +111,13 @@ const ChartRenderer = ({ minH }: any) => {
                 <Heading fontSize="xl">Visualization</Heading>
                 <Divider />
                 {tableData.length ? (
-                    <VegaLite spec={vegaSpec} data={{ table: vegaData }} />
+                    <VegaLite
+                        spec={vegaSpec}
+                        data={{ table: vegaData }}
+                        tooltip={new Handler().call}
+                    />
                 ) : (
-                    <Center minH={minH-100}>
+                    <Center minH={minH - 100}>
                         <Text>Please import data or load demo!</Text>
                     </Center>
                 )}
