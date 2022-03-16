@@ -127,6 +127,9 @@ const TableConfigureation = () => {
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Data Configuration</Heading>
                 <Divider />
+                <Button colorScheme="blue" onClick={handleFetch} variant="solid">
+                    Load Random Demo
+                </Button>
                 <Box>
                     <Text>Import Data</Text>
                     <Center
@@ -215,10 +218,6 @@ const TableConfigureation = () => {
                         </RadioGroup>
                     </FormControl>
                 ) : null}
-
-                <Button colorScheme="blue" onClick={handleFetch}>
-                    Load Random Demo
-                </Button>
             </VStack>
         </Box>
     );

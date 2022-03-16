@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, VStack, Divider, Heading } from "@chakra-ui/react";
+import { Box, VStack, Divider, Heading, Center, Text } from "@chakra-ui/react";
 import { VegaLite } from "react-vega";
 import {
     tableValueInfoState,
@@ -22,7 +22,7 @@ interface Size {
     width: number;
     height: number;
 }
-const ChartRenderer = (props: any) => {
+const ChartRenderer = ({ minH }: any) => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
     const [tableValueInfo, setTableValueInfo] =
         useRecoilState(tableValueInfoState);
@@ -47,7 +47,6 @@ const ChartRenderer = (props: any) => {
         window.onresize = resizeHanlder;
     }, []);
 
-
     useEffect(() => {
         const spec: any = {
             title: splitSentence(tableTitle),
@@ -70,7 +69,6 @@ const ChartRenderer = (props: any) => {
             },
             data: { name: "table" },
         };
-
 
         const data: any = [];
         for (let i = 0; i < tableData.length; i++) {
@@ -106,14 +104,17 @@ const ChartRenderer = (props: any) => {
     }, [tableData, tableTitle, tableValueInfo, chartType, barGrouped, size]);
 
     return (
-        <Box p={6} w="full">
+        <Box p={6} w="full" minH={minH}>
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Visualization</Heading>
                 <Divider />
-                <VegaLite
-                    spec={vegaSpec}
-                    data={{ table: vegaData }}
-                />
+                {tableData.length ? (
+                    <VegaLite spec={vegaSpec} data={{ table: vegaData }} />
+                ) : (
+                    <Center minH={minH-100}>
+                        <Text>Please import data or load demo!</Text>
+                    </Center>
+                )}
             </VStack>
         </Box>
     );
