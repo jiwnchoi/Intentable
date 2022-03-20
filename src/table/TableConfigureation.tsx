@@ -29,7 +29,6 @@ import {
     barGroupedState,
 } from "../../states";
 
-import type { table } from "../../states";
 
 function csvToJSON(csvString: string) {
     const lines = csvString.split("\n");
@@ -77,7 +76,7 @@ const TableConfigureation = () => {
     const [columnNumber, setColumnNumber] = useState(2);
 
     async function handleFetch() {
-        const get = await axios.get("http://localhost:5000/demo");
+        const get = await axios.get("http://localhost:5500/demo");
         const data: fetchDemo = get.data;
 
         setTableTitle(data.title);
@@ -97,29 +96,9 @@ const TableConfigureation = () => {
             setBarGrouped(false);
         }
         const tmpTable = csvToJSON(data.table);
-        const tmpColumnNumber = Object.keys(tmpTable[0]).length;
-        console.log("HELLO!");
-        console.log(tmpTable);
-        console.log(tmpColumnNumber);
-
-        if (tmpColumnNumber > 2) {
-            const longForm: table[] = [];
-            for (let i = 0; i < tmpTable.length; i++) {
-                for (let j = 1; j < tmpColumnNumber; j++) {
-                    longForm.push({
-                        characteristic: tmpTable[i].characteristic,
-                        value: tmpTable[i][Object.keys(tmpTable[i])[j]],
-                        group: Object.keys(tmpTable[i])[j],
-                    });
-                }
-            }
-            console.log(longForm);
-            setTableData(longForm);
-            setColumnNumber(3);
-        } else {
-            setTableData(tmpTable);
-            setColumnNumber(2);
-        }
+        const cardinality = Object.keys(tmpTable[0]).length;
+        setTableData(tmpTable);
+        setColumnNumber(cardinality);
     }
 
     return (
@@ -177,7 +156,7 @@ const TableConfigureation = () => {
                             >
                                 Line
                             </Radio>
-                            {columnNumber < 3 ? (
+                            {columnNumber < 3 && tableData.length < 11 ? (
                                 <Radio
                                     value="arc"
                                     onChange={(e) => setChartType("arc")}

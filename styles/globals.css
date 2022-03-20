@@ -18,3 +18,8 @@ a {
 .vega-embed {
   width : 100%;
 }
+
+.selected {
+  fill : "black";
+  opacity: 0.5;
+}

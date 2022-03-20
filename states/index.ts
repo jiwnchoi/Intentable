@@ -1,13 +1,7 @@
 import { atom } from "recoil";
-import axios from 'axios';
+import { Mark, TableData } from "../types"
 
 
-export type mark = "bar" | "arc" | "line";
-export type table = {
-    characteristic : string,
-    value : number, 
-    group? : string,
-}
 
 export const tableTitleState = atom({
     key : 'tableTitle',
@@ -19,12 +13,12 @@ export const tableValueInfoState = atom({
     default : ""
 })
 
-export const chartTypeState = atom<mark>({
+export const chartTypeState = atom<Mark>({
     key : 'chartType',
     default : "bar"
 })
 
-export const tableDataState = atom<table[]>({
+export const tableDataState = atom<TableData[]>({
     key: "tableData",
     default: [],
 });
@@ -42,4 +36,9 @@ export const selectedElementState = atom({
 export const barGroupedState = atom({
     key : 'barGrouped',
     default : true,
+})
+
+export const userSelectionState = atom<any[]>({
+    key : 'userSelection',
+    default : [],
 })
