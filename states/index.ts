@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { Mark, TableData } from "../types"
+import { Mark, Selection, TableData } from "../types"
 
 
 
@@ -38,7 +38,12 @@ export const barGroupedState = atom({
     default : true,
 })
 
-export const userSelectionState = atom<any[]>({
+export const userSelectionState = atom<string[]>({
     key : 'userSelection',
     default : [],
+})
+
+export const captionState = atom({
+    key : 'caption',
+    default : ""
 })

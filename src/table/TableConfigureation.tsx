@@ -28,46 +28,13 @@ import {
     rowTypeState,
     barGroupedState,
 } from "../../states";
+import { fetchDemo } from "../../types";
 
 
-function csvToJSON(csvString: string) {
-    const lines = csvString.split("\n");
-    const result = [];
-    const headers: string[] = lines[0].split(",");
-    if (headers[0] == "") headers[0] = "characteristic";
-    if (headers[1] == "" || headers[1] == " ") headers[1] = "value";
-
-    for (let i = 1; i < lines.length - 1; i++) {
-        const obj: any = {};
-        const currentline = lines[i].split(",");
-
-        for (let j = 0; j < headers.length; j++) {
-            if (j) {
-                obj[headers[j]] = Number(currentline[j]);
-            } else {
-                obj[headers[j]] = currentline[j];
-            }
-        }
-
-        result.push(obj);
-    }
-
-    return result;
-}
-
-type fetchDemo = {
-    title: string;
-    value_info: string;
-    chart_type: string;
-    row_type: string;
-    table: string;
-};
 
 const TableConfigureation = () => {
-    const fileTypes = ["CSV"];
-
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
-    const [valueInformation, setValueInformation] =
+    const [valueInfo, setValueInfo] =
         useRecoilState(tableValueInfoState);
     const [tableData, setTableData] = useRecoilState(tableDataState);
     const [chartType, setChartType] = useRecoilState(chartTypeState);
@@ -76,11 +43,11 @@ const TableConfigureation = () => {
     const [columnNumber, setColumnNumber] = useState(2);
 
     async function handleFetch() {
-        const get = await axios.get("http://localhost:5500/demo");
+        const get = await axios.get("http://localhost:5600/demo");
         const data: fetchDemo = get.data;
 
         setTableTitle(data.title);
-        setValueInformation(data.value_info);
+        setValueInfo(data.value_info);
         setRowType(data.row_type);
         if (data.chart_type == "<simplebar>") {
             setChartType("bar");
@@ -91,13 +58,13 @@ const TableConfigureation = () => {
         } else if (data.chart_type == "<groupedbar>") {
             setChartType("bar");
             setBarGrouped(true);
-        } else if (data.chart_type == "<stackedbar") {
+        } else if (data.chart_type == "<stackedbar>") {
             setChartType("bar");
             setBarGrouped(false);
         }
-        const tmpTable = csvToJSON(data.table);
-        const cardinality = Object.keys(tmpTable[0]).length;
-        setTableData(tmpTable);
+        console.log(data.title, data.table)
+        const cardinality = Object.keys(data.table[0]).length;
+        setTableData(data.table);
         setColumnNumber(cardinality);
     }
 
@@ -130,14 +97,14 @@ const TableConfigureation = () => {
                     />
                 </FormControl>
                 <FormControl>
-                    <FormLabel htmlFor="value-information">
-                        Value Information
+                    <FormLabel htmlFor="value-Info">
+                        Value Information 
                     </FormLabel>
                     <Input
-                        id="value-information"
+                        id="value-Info"
                         placeholder="e.g. Percentage of people, Value in millions"
-                        onChange={(e) => setValueInformation(e.target.value)}
-                        value={valueInformation}
+                        onChange={(e) => setValueInfo(e.target.value)}
+                        value={valueInfo}
                     />
                 </FormControl>
                 <FormControl>

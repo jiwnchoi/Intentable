@@ -4,7 +4,7 @@ import { Group } from "@visx/group";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { useRecoilState } from "recoil";
-import { tableDataState } from "../../states";
+import { tableDataState, userSelectionState } from "../../states";
 import { ChartProps, TableData } from "../../types";
 import { schemeCategory10 as color } from "d3-scale-chromatic";
 import { curveLinear } from "@visx/curve";
@@ -16,6 +16,7 @@ const getCharacteristic = (d: TableData) => d.characteristic;
 
 export default function SimpleLineChart({ xScale, yScale }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState);
+    const [userSelection, setUserSelection] = useRecoilState(userSelectionState);
     const scaleWidth = xScale.bandwidth();
     return (
         <>
@@ -26,10 +27,18 @@ export default function SimpleLineChart({ xScale, yScale }: ChartProps) {
                 return (
                     <Circle
                         key={i}
-                        r={5}
+                        r={10}
                         fill={color[0]}
                         cx={(xScale(characteristic) ?? 0) + scaleWidth / 2}
                         cy={yScale(value)}
+                        opacity={userSelection.includes(`${i} 0`) ? 1 : 0.5}
+                        onClick={(i) => {
+                            if (userSelection.includes(`${i} 0`))
+                                setUserSelection(
+                                    userSelection.filter((d) => d !== `${i} 0`)
+                                );
+                            else setUserSelection([...userSelection, `${i} 0`]);
+                        }}
                     />
                 );
             })}
@@ -39,6 +48,7 @@ export default function SimpleLineChart({ xScale, yScale }: ChartProps) {
                 x={(d) => (xScale(getCharacteristic(d)) ?? 0) + scaleWidth / 2}
                 y={(d) => yScale(getValue(d)) ?? 0}
                 stroke={color[0]}
+                opacity={1}
                 strokeWidth={2}
             />
             ;

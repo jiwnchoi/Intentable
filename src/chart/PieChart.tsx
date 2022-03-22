@@ -4,9 +4,6 @@ import { useRecoilState } from "recoil";
 import { tableDataState } from "../../states";
 import { ChartProps, TableData } from "../../types";
 import { schemeCategory10 as color } from "d3-scale-chromatic";
-import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
-import { Center, Flex } from "@chakra-ui/react";
-import { scaleOrdinal } from "@visx/scale";
 
 
 const getValue = (d: TableData) => d.value;
@@ -14,7 +11,7 @@ const getCharacteristic = (d: TableData) => d.characteristic;
 const pieSortValues = (a : number, b : number) => b - a;
 
 export default function SimpleBarChart({ xMax, yMax, margins }: ChartProps) {
-    const [tableData, setTableData] = useRecoilState<TableData[]>(tableDataState);
+    const [tableData, setTableData] = useRecoilState(tableDataState);
 
     const xCenter = xMax / 2
     const yCenter = yMax / 2

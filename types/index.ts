@@ -24,3 +24,17 @@ export type UserSelection = {
     columnIndex : number;
     rowIndex : number;
 }
+
+export type fetchDemo = {
+    title: string;
+    value_info: string;
+    chart_type: string;
+    row_type: string;
+    table: TableData[];
+};
+
+export type Selection = {
+    column? : number | string;
+    row? : number | string;
+    type : "entity" | "name";
+}
