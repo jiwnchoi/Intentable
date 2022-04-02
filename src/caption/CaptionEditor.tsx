@@ -17,44 +17,42 @@ import {
     tableTitleState,
     tableValueInfoState,
     chartTypeState,
+    tableDataState,
 } from "../../states";
-{/* <is_overall>overall</is_overall>
-<chart_type>line</chart_type>
-<title>consumer price index (cpi) of housing and utilities in south africa from march 2019 to march 2020</title>
-<value_info>consumer price index (dec 2016 = 100)</value_info>
-<selecttion>
-    <name>row : 0</name>
-    <entity>row : 0, column : 0</entity>
-    <name>row : 1</name>
-    <entity>row : 1, column : 0</entity>
-</selecttion> */}
+import { Element } from "../../types";
+
 const CaptionEditor = (props: any) => {
     const [caption, setCaption] = useRecoilState(captionState);
-    const [userSelection, setUserSelection] = useRecoilState(userSelectionState);
+    const [userSelection, setUserSelection] =
+        useRecoilState(userSelectionState);
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
-    const [tableValueInfo, setTableValueInfo] = useRecoilState(
-        tableValueInfoState
-    );
+    const [tableValueInfo, setTableValueInfo] =
+        useRecoilState(tableValueInfoState);
     const [chartType, setChartType] = useRecoilState(chartTypeState);
+    const [tableData, setTableData] = useRecoilState(tableDataState);
     const [sourceSequence, setSourceSequence] = useState("");
-    
+
     const predict = async () => {
         const get = await axios.get(
             "http://localhost:5600/predict?caption=" + sourceSequence
-        )
-        console.log(get.data)
-        setCaption(get.data.predict);
-    }
-
+        );
+        let caption = get.data.predict;
+        setCaption(caption);
+    };
 
     useEffect(() => {
-        const caption = 
-        `<is_overall>overall</is_overall><chart_type>${chartType.replace("arc","pie")}</chart_type>` 
-        + `<title>${tableTitle}</title><value_info>${tableValueInfo}</value_info><selecttion>` 
-        + `</selecttion>`;
+        console.log(userSelection)
+        let caption = `Generate: <chart_type>${chartType}</chart_type><title>${tableTitle}</title><value_info>${tableValueInfo}</value_info><selection>`
+        caption += `${userSelection.map((item: Element) => item.get()).join("")}`
+        caption += `</selection>`
+        caption = caption.replace("arc","pie")
+        console.log(caption)
         setSourceSequence(caption);
     }, [chartType, tableTitle, tableValueInfo, userSelection]);
 
+    useEffect(() => {
+        setCaption("");
+    }, [tableData])
 
     return (
         <Box p={6}>
@@ -62,10 +60,11 @@ const CaptionEditor = (props: any) => {
                 <Heading fontSize="xl">Caption</Heading>
 
                 <Divider />
+                {/* <Box>{sourceSequence}</Box> */}
                 <Button onClick={predict} colorScheme="blue" variant="solid">
                     Generate
                 </Button>
-                <Textarea minH={200} value={caption}> </Textarea>
+                <Box minH={200}>{caption}</Box>
             </VStack>
         </Box>
     );

@@ -1,97 +1,131 @@
-import { useMemo } from "react";
-import { Bar } from "@visx/shape";
-import { Group } from "@visx/group";
-import { AxisBottom, AxisLeft } from "@visx/axis";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { Circle, LinePath } from "@visx/shape";
 import { useRecoilState } from "recoil";
-import { tableDataState } from "../../states";
-import { ChartProps, TableData } from "../../types";
+import {
+    tableDataState,
+    userSelectionState,
+    featureTableState,
+} from "../../states";
+import { Element, ChartProps } from "../../types";
+import { schemeCategory10 as nonSelectedColor } from "d3-scale-chromatic";
+import { curveLinear } from "@visx/curve";
+import { hsl } from "d3-color";
+import { useMemo } from "react";
+import { scaleBand, scaleOrdinal } from "@visx/scale";
 
-const horizontalMargin = 40;
-const verticalMargin = 40;
+const getSelectedColor = (color: string) =>
+    String(hsl(hsl(color).h, hsl(color).s, hsl(color).l * 1.5));
 
-const getValue = (d: TableData) => d.value;
-const getCharacteristic = (d: TableData) => d.characteristic;
+export default function MultiLineChart({ xScale, yScale }: ChartProps) {
+    const [tableData, setTableData] = useRecoilState(tableDataState);
+    const [userSelection, setUserSelection] =
+        useRecoilState(userSelectionState);
+    const [featureTable, setFeatureTable] = useRecoilState(featureTableState);
+    const keys = Object.keys(tableData[0]).filter(
+        (d) => d !== "characteristic"
+    ) as string[];
+    const scaleWidth = xScale.bandwidth();
 
-export default function SimpleBarChart({ width, height }: ChartProps) {
-    const [tableData, setTableData] =
-        useRecoilState<TableData[]>(tableDataState);
-
-    const xMax = width - horizontalMargin;
-    const yMax = height - verticalMargin;
-
-    const xScale = useMemo(
+    const ordinalColorScale = useMemo(
         () =>
-            scaleBand<string>({
-                range: [0, xMax],
-                round: true,
-                domain: tableData.map(getCharacteristic),
-                padding: 0.2,
+            scaleOrdinal({
+                domain: keys,
+                range: [...nonSelectedColor],
             }),
-        [xMax, tableData]
+        [keys]
     );
-    const yScale = useMemo(() => {
-        console.log(
-            Math.min(...tableData.map(getValue)),
-            Math.max(...tableData.map(getValue))
-        );
-        return scaleLinear<number>({
-            range: [yMax, 0],
-            round: true,
-            domain: [
-                Math.min(...tableData.map(getValue)),
-                Math.max(...tableData.map(getValue)),
-            ],
-        });
-    }, [yMax, tableData]);
-
-    // useEffect(() => {
-    //     forceUpdate()
-    // }, [tableData])
 
     return (
         <>
-            <svg width={width} height={height}>
-                <Group left={horizontalMargin} top={verticalMargin / 2}>
-                    {tableData.map((d) => {
-                        const letter = getCharacteristic(d);
-                        const barWidth = xScale.bandwidth();
-                        const barHeight = yMax - (yScale(getValue(d)) ?? 0);
-                        const barX = xScale(letter);
-                        const barY = yMax - barHeight;
-                        // console.log(letter, barWidth, barHeight, barX, barY);
-                        return (
-                            <Bar
-                                key={`bar-${letter}`}
-                                x={barX}
-                                y={barY}
-                                width={barWidth}
-                                height={barHeight}
-                                fill="#4880C8"
-                                onClick={() => {
-                                    console.log(d);
-                                }}
-                            />
-                        );
-                    })}
-                </Group>
-                <AxisLeft
-                    scale={yScale}
-                    left={horizontalMargin}
-                    top={verticalMargin / 2}
-                />
-                <AxisBottom
-                    left={horizontalMargin}
-                    top={yMax + verticalMargin / 2}
-                    scale={xScale}
-                    stroke="#000"
-                    tickStroke="#000"
-                    tickLabelProps={(d) => ({
-                        textAnchor: "middle",
-                        fontSize: 12,
-                    })}
-                />
-            </svg>
+            {keys.map((key, key_index) => {
+                const nonSelectedColor = ordinalColorScale(key);
+                const selectedColor = getSelectedColor(nonSelectedColor);
+                return (
+                    <>
+                        <LinePath
+                            data={tableData}
+                            x={(d) =>
+                                (xScale(d.characteristic as string) ?? 0) +
+                                scaleWidth / 2
+                            }
+                            y={(d) => yScale(d[key] as number) ?? 0}
+                            stroke={selectedColor}
+                            strokeWidth={2}
+                        />
+                        {tableData.map((d, i) => {
+                            const characteristic = d.characteristic as string;
+                            const value = d[key] as number;
+
+                            return (
+                                <Circle
+                                    key={i}
+                                    r={
+                                        userSelection.some(
+                                            (d) =>
+                                                d.key ===
+                                                `${key}-${characteristic}-${value}`
+                                        )
+                                            ? 10
+                                            : 5
+                                    }
+                                    cx={
+                                        (xScale(characteristic) ?? 0) +
+                                        scaleWidth / 2
+                                    }
+                                    cy={yScale(value)}
+                                    fill={
+                                        userSelection.some(
+                                            (d) =>
+                                                d.key ===
+                                                `${key}-${characteristic}-${value}`
+                                        )
+                                            ? selectedColor
+                                            : nonSelectedColor
+                                    }
+                                    onClick={() => {
+                                        const columnFeature = featureTable[key];
+                                        // get feature key by value
+                                        const feature = Object.keys(
+                                            columnFeature
+                                        ).find(
+                                            (key) =>
+                                                columnFeature[key] ===
+                                                characteristic
+                                        );
+                                        if (
+                                            userSelection.some(
+                                                (d) =>
+                                                    d.key ===
+                                                    `${key}-${characteristic}-${value}`
+                                            )
+                                        ) {
+                                            setUserSelection(
+                                                userSelection.filter(
+                                                    (d) =>
+                                                        d.key !==
+                                                        `${key}-${characteristic}-${value}`
+                                                )
+                                            );
+                                        } else {
+                                            const selectedElement = new Element(
+                                                `${key}-${characteristic}-${value}`,
+                                                feature,
+                                                value,
+                                                characteristic,
+                                                key,
+                                                "element"
+                                            );
+                                            setUserSelection([
+                                                ...userSelection,
+                                                selectedElement,
+                                            ]);
+                                        }
+                                    }}
+                                />
+                            );
+                        })}
+                    </>
+                );
+            })}
         </>
     );
 }

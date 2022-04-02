@@ -19,7 +19,7 @@ import {
 import ChartRenderer from "./chart/ChartRenderer";
 import TableConfigureation from "./table/TableConfigureation";
 import CaptionEditor from "./caption/CaptionEditor";
-import EntitySelector from "./chart/EntitySelector";
+import EntitySelector from "./entitySelector";
 
 const Dashboard = () => (
     <Container maxW={"full"} m={4}>

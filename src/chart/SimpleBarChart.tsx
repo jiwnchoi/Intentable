@@ -1,13 +1,18 @@
-import { BarRounded } from "@visx/shape";
+import { Bar } from "@visx/shape";
 import { useRecoilState } from "recoil";
-import { tableDataState, userSelectionState } from "../../states";
-import { ChartProps, TableData } from "../../types";
-import { schemeCategory10 as color } from "d3-scale-chromatic";
+import {
+    featureTableState,
+    tableDataState,
+    userSelectionState,
+} from "../../states";
+import { ChartProps, Selection, Element } from "../../types";
+import { schemeCategory10 as nonSelectedColor } from "d3-scale-chromatic";
+import { hsl } from 'd3-color';
+
+const selectedColor = nonSelectedColor.map(c => hsl(hsl(c).h, hsl(c).s, hsl(c).l * 1.5));
+
 
 const margins = { top: 20, right: 20, bottom: 40, left: 40 };
-
-const getValue = (d: TableData) => d.value;
-const getCharacteristic = (d: TableData) => d.characteristic;
 
 export default function SimpleBarChart({
     xScale,
@@ -17,34 +22,61 @@ export default function SimpleBarChart({
 }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState);
     const [userSelection, setUserSelection] =
-        useRecoilState(userSelectionState);
-
+        useRecoilState(userSelectionState); 
+    const [featureTable, setFeatureTable] = useRecoilState(featureTableState);
     return (
         <>
             {tableData.map((d, i) => {
-                const characteristic = getCharacteristic(d);
-                const value = getValue(d);
+                const characteristic = d.characteristic as string;
+                const value = d.value as number;
                 const barWidth = xScale.bandwidth();
                 const barHeight = yMax - (yScale(value) ?? 0);
                 const barX = xScale(characteristic) ?? 0;
                 const barY = yScale(value) + margins.top ?? 0;
                 return (
-                    <BarRounded
+                    <Bar
                         key={`bar-${characteristic}`}
                         x={barX}
                         y={barY}
                         width={barWidth}
                         height={barHeight}
-                        fill={color[0]}
-                        opacity={userSelection.includes(`${i} 0`) ? 1 : 0.5}
-                        radius={barWidth / 8}
-                        top={true}
-                        onClick={(i) => {
-                            if (userSelection.includes(`${i} 0`))
+                        fill={userSelection.some(
+                            (d) => d.key === `value-${characteristic}-${value}`
+                        )? String(selectedColor[0]) : nonSelectedColor[0] as string}
+                        onClick={() => {
+                            const columnFeature = featureTable["value"];
+                            // get feature key by value
+                            const feature = Object.keys(columnFeature).find(
+                                (key) => columnFeature[key] === characteristic
+                            );
+                            if (
+                                userSelection.some(
+                                    (d) =>
+                                        d.key ===
+                                        `value-${characteristic}-${value}`
+                                )
+                            ) {
                                 setUserSelection(
-                                    userSelection.filter((d) => d !== `${i} 0`)
+                                    userSelection.filter(
+                                        (d) =>
+                                            d.key !==
+                                            `value-${characteristic}-${value}`
+                                    )
                                 );
-                            else setUserSelection([...userSelection, `${i} 0`]);
+                            } else {
+                                const selectedElement = new Element(
+                                    `value-${characteristic}-${value}`,
+                                    feature,
+                                    value,
+                                    characteristic,
+                                    "value",
+                                    "element"
+                                );
+                                setUserSelection([
+                                    ...userSelection,
+                                    selectedElement,
+                                ]);
+                            }
                         }}
                     />
                 );

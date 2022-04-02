@@ -39,6 +39,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@emotion/react", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:11.8.2"],\
             ["@emotion/styled", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:11.8.1"],\
             ["@fontsource/rajdhani", "npm:4.5.2"],\
+            ["@types/d3-color", "npm:3.0.2"],\
             ["@types/d3-scale", "npm:4.0.2"],\
             ["@types/d3-scale-chromatic", "npm:3.0.0"],\
             ["@types/node", "npm:17.0.21"],\
@@ -58,6 +59,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "npm:3.1.1"],\
             ["axios", "npm:0.26.1"],\
             ["convert-csv-to-json", "npm:1.3.3"],\
+            ["d3-color", "npm:3.1.0"],\
             ["d3-scale", "npm:4.0.2"],\
             ["d3-scale-chromatic", "npm:3.0.0"],\
             ["eslint", "npm:8.10.0"],\
@@ -68,7 +70,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],\
             ["react-dom", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:17.0.2"],\
             ["recoil", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:0.6.1"],\
-            ["swr", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
           "linkType": "SOFT"\
@@ -2467,6 +2468,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/d3-color", "npm:1.4.2"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:3.0.2", {\
+          "packageLocation": "./.yarn/cache/@types-d3-color-npm-3.0.2-bcf3086169-9009aa52e4.zip/node_modules/@types/d3-color/",\
+          "packageDependencies": [\
+            ["@types/d3-color", "npm:3.0.2"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["@types/d3-interpolate", [\
@@ -3827,6 +3835,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@emotion/react", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:11.8.2"],\
             ["@emotion/styled", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:11.8.1"],\
             ["@fontsource/rajdhani", "npm:4.5.2"],\
+            ["@types/d3-color", "npm:3.0.2"],\
             ["@types/d3-scale", "npm:4.0.2"],\
             ["@types/d3-scale-chromatic", "npm:3.0.0"],\
             ["@types/node", "npm:17.0.21"],\
@@ -3846,6 +3855,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "npm:3.1.1"],\
             ["axios", "npm:0.26.1"],\
             ["convert-csv-to-json", "npm:1.3.3"],\
+            ["d3-color", "npm:3.1.0"],\
             ["d3-scale", "npm:4.0.2"],\
             ["d3-scale-chromatic", "npm:3.0.0"],\
             ["eslint", "npm:8.10.0"],\
@@ -3856,7 +3866,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react", "npm:17.0.2"],\
             ["react-dom", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:17.0.2"],\
             ["recoil", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:0.6.1"],\
-            ["swr", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2"],\
             ["typescript", "patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"]\
           ],\
           "linkType": "SOFT"\
@@ -4104,6 +4113,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/d3-color-npm-3.0.1-bea992b889-5096af3bd3.zip/node_modules/d3-color/",\
           "packageDependencies": [\
             ["d3-color", "npm:3.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:3.1.0", {\
+          "packageLocation": "./.yarn/cache/d3-color-npm-3.1.0-fc73fe3b15-4931fbfda5.zip/node_modules/d3-color/",\
+          "packageDependencies": [\
+            ["d3-color", "npm:3.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7161,28 +7177,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/supports-preserve-symlinks-flag-npm-1.0.0-f17c4d0028-53b1e247e6.zip/node_modules/supports-preserve-symlinks-flag/",\
           "packageDependencies": [\
             ["supports-preserve-symlinks-flag", "npm:1.0.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["swr", [\
-        ["npm:1.2.2", {\
-          "packageLocation": "./.yarn/cache/swr-npm-1.2.2-90e14a1b98-723747c7c2.zip/node_modules/swr/",\
-          "packageDependencies": [\
-            ["swr", "npm:1.2.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2", {\
-          "packageLocation": "./.yarn/__virtual__/swr-virtual-8862c32daa/0/cache/swr-npm-1.2.2-90e14a1b98-723747c7c2.zip/node_modules/swr/",\
-          "packageDependencies": [\
-            ["swr", "virtual:5320b8c6c653c88e5bddb519cd362f56c3c376e733e8163f922f34de2c47f69c46186b5ab429fef59de19ef89c0a01d4d34b43690db2c01a83841fca26c3ac43#npm:1.2.2"],\
-            ["@types/react", "npm:17.0.40"],\
-            ["react", "npm:17.0.2"]\
-          ],\
-          "packagePeers": [\
-            "@types/react",\
-            "react"\
           ],\
           "linkType": "HARD"\
         }]\

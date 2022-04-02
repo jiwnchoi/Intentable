@@ -15,11 +15,12 @@ import {
     VStack,
     Center,
     Button,
+    Textarea,
 } from "@chakra-ui/react";
 import axios from "axios";
 
-import { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import {
     tableTitleState,
     tableValueInfoState,
@@ -27,45 +28,75 @@ import {
     chartTypeState,
     rowTypeState,
     barGroupedState,
+    featureTableState,
+    userSelectionState
 } from "../../states";
-import { fetchDemo } from "../../types";
-
-
+import { fetchDemo,  columnFeature } from "../../types";
 
 const TableConfigureation = () => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
-    const [valueInfo, setValueInfo] =
-        useRecoilState(tableValueInfoState);
+    const [valueInfo, setValueInfo] = useRecoilState(tableValueInfoState);
     const [tableData, setTableData] = useRecoilState(tableDataState);
     const [chartType, setChartType] = useRecoilState(chartTypeState);
     const [rowType, setRowType] = useRecoilState(rowTypeState);
     const [barGrouped, setBarGrouped] = useRecoilState(barGroupedState);
-    const [columnNumber, setColumnNumber] = useState(2);
+    const [featureTable, setFeatureTable] = useRecoilState(featureTableState);
+    const [userSelection, setUserSelection] = useRecoilState(userSelectionState);
+    const [columnNumber, setColumnNumber] = useState(0);
+    const [rowNumber, setRowNumber] = useState(0);
 
-    async function handleFetch() {
-        const get = await axios.get("http://localhost:5600/demo");
+    useEffect(() => {
+        setFeatureTable({})
+        setUserSelection([])
+    }, [tableData])
+
+    async function handleFetch(link: string) {
+        const get = await axios.get(`http://localhost:5600/${link}`);
         const data: fetchDemo = get.data;
-
-        setTableTitle(data.title);
-        setValueInfo(data.value_info);
-        setRowType(data.row_type);
-        if (data.chart_type == "<simplebar>") {
+        const columnNames: string[] = Object.keys(data.table[0]).filter(
+            (d) => d !== "characteristic"
+        );
+        setRowNumber(data.table.length);
+        setColumnNumber(columnNames.length);
+        setTableData(data.table);
+        console.log(data.table)
+        if (data.chart_type == "bar") {
             setChartType("bar");
         } else if (data.chart_type.includes("line")) {
             setChartType("line");
         } else if (data.chart_type.includes("pie")) {
             setChartType("arc");
-        } else if (data.chart_type == "<groupedbar>") {
-            setChartType("bar");
-            setBarGrouped(true);
-        } else if (data.chart_type == "<stackedbar>") {
-            setChartType("bar");
-            setBarGrouped(false);
+        } 
+        setTableTitle(data.title);
+        setValueInfo(data.value_info);
+        setRowType(data.row_type);
+
+        const tmpFeatureTable: { [colname: string]: columnFeature } = {};
+        for (const columnName of columnNames) {
+            const characteristics = data.table.map((d) => d.characteristic);
+            const values = data.table.map((d) => d[columnName]);
+
+            const max = values.reduce((a, b) => {
+                return a > b ? a : b;
+            });
+            const min = values.reduce((a, b) => {
+                return a < b ? a : b;
+            });
+
+            tmpFeatureTable[columnName] =
+                data.row_type === "DATE"
+                    ? ({
+                          past: characteristics[0],
+                          recent: characteristics[values.length - 1],
+                          max: characteristics[values.indexOf(max)],
+                          min: characteristics[values.indexOf(min)],
+                      } as columnFeature)
+                    : ({
+                          max: characteristics[values.indexOf(max)],
+                          min: characteristics[values.indexOf(min)],
+                      } as columnFeature);
         }
-        console.log(data.title, data.table)
-        const cardinality = Object.keys(data.table[0]).length;
-        setTableData(data.table);
-        setColumnNumber(cardinality);
+        setFeatureTable(tmpFeatureTable);
     }
 
     return (
@@ -73,8 +104,21 @@ const TableConfigureation = () => {
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Data Configuration</Heading>
                 <Divider />
-                <Button colorScheme="blue" onClick={handleFetch} variant="solid">
-                    Load Random Demo
+                <Button
+                    colorScheme="blue"
+                    onClick={() => {
+                        handleFetch("get_from_train_set");
+                    }}
+                    variant="solid"
+                >
+                    Load Demo From Train/Valid Set
+                </Button>
+                <Button
+                    colorScheme="orange"
+                    onClick={() => handleFetch("get_from_test_set")}
+                    variant="solid"
+                >
+                    Load Demo From Test Set
                 </Button>
                 <Box>
                     <Text>Import Data</Text>
@@ -89,22 +133,24 @@ const TableConfigureation = () => {
                 </Box>
                 <FormControl>
                     <FormLabel htmlFor="title">Title</FormLabel>
-                    <Input
+                    <Textarea
                         id="title"
                         placeholder="e.g. Number of monthly active Facebook users worldwide as of 4th quarter 2021"
                         onChange={(e) => setTableTitle(e.target.value)}
                         value={tableTitle}
+                        resize="none"
                     />
                 </FormControl>
                 <FormControl>
                     <FormLabel htmlFor="value-Info">
-                        Value Information 
+                        Value Information
                     </FormLabel>
-                    <Input
+                    <Textarea
                         id="value-Info"
                         placeholder="e.g. Percentage of people, Value in millions"
                         onChange={(e) => setValueInfo(e.target.value)}
                         value={valueInfo}
+                        resize="none"
                     />
                 </FormControl>
                 <FormControl>
@@ -123,14 +169,17 @@ const TableConfigureation = () => {
                             >
                                 Line
                             </Radio>
-                            {columnNumber < 3 && tableData.length < 11 ? (
-                                <Radio
-                                    value="arc"
-                                    onChange={(e) => setChartType("arc")}
-                                >
-                                    Pie
-                                </Radio>
-                            ) : null}
+                            <Radio
+                                value="arc"
+                                onChange={(e) => setChartType("arc")}
+                                disabled={
+                                    columnNumber < 3 && rowNumber < 11
+                                        ? false
+                                        : true
+                                }
+                            >
+                                Pie
+                            </Radio>
                         </HStack>
                     </RadioGroup>
                 </FormControl>
@@ -146,7 +195,6 @@ const TableConfigureation = () => {
                                     value="grouped"
                                     onChange={(e) => {
                                         setBarGrouped(true);
-                                        console.log(barGrouped);
                                     }}
                                 >
                                     Grouped
@@ -155,7 +203,6 @@ const TableConfigureation = () => {
                                     value="stacked"
                                     onChange={(e) => {
                                         setBarGrouped(false);
-                                        console.log(barGrouped);
                                     }}
                                 >
                                     Stacked

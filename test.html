@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+
+
+    <title>My Scatterplot</title>
+    <style>
+        body {
+            background: #eee;
+        }
+
+        .container {
+            width: 640px;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h1">My Scatterplot</span>
+            </div>
+        </nav>
+
+    </header>
+
+    <main class="container">
+        <div class="row pt-2">
+            <div class="col-1 text-end pe-2"><strong>X:</strong></div>
+            <div class="col-11">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="x-encoding" value="sepal.length" id="x-sl"
+                        checked>
+                    <label class="form-check-label" for="x-sl">SepalLength</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="x-encoding" value="sepal.width" id="x-sw">
+                    <label class="form-check-label" for="x-sw">SepalWidth</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="x-encoding" value="petal.length" id="x-pl">
+                    <label class="form-check-label" for="x-pl">PetalLength</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="x-encoding" value="petal.width" id="x-pw">
+                    <label class="form-check-label" for="x-pw">PetalWidth</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 text-end pe-2"><strong>Y:</strong></div>
+            <div class="col-11">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="y-encoding" value="sepal.length" id="y-sl">
+                    <label class="form-check-label" for="y-sl">SepalLength</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="y-encoding" value="sepal.width" id="y-sw"
+                        checked>
+                    <label class="form-check-label" for="y-sw">SepalWidth</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="y-encoding" value="petal.length" id="y-pl">
+                    <label class="form-check-label" for="y-pl">PetalLength</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="y-encoding" value="petal.width" id="y-pw">
+                    <label class="form-check-label" for="y-pw">PetalWidth</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col offset-1">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="use-color">
+                    <label class="form-check-label" for="use-color">Color-encode Class</label>
+                </div>
+            </div>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary" id="update">Update</button>
+            <button class="btn btn-secondary" id="reset">Reset</button>
+        </div>
+        <div class="text-center">
+            <svg width="400" height="400" id="svg">
+            </svg>
+        </div>
+    </main>
+
+    <script>
+        let svg; // the main container, <svg>
+        let container; // <g> for circles
+        let xAxis; // <g> for the x axis
+        let yAxis; // <g> for the y axis
+        let legend; // <g> for the legend
+
+        let width = 400, height = 400;
+        let margin = { top: 10, right: 10, bottom: 40, left: 40 };
+        let data; // loaded data
+        let xScale, yScale, zScale;
+
+        function initialize() {
+            svg = d3.select("#svg");
+            container = svg.append("g");
+            xAxis = svg.append("g");
+            yAxis = svg.append("g");
+            legend = svg.append("g");
+
+            xScale = d3.scaleLinear();
+            yScale = d3.scaleLinear();
+            zScale = d3.scaleOrdinal().domain(["Setosa", "Versicolor", "Virginica"]).range(d3.schemeCategory10)
+
+            svg
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+
+            container.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+            // TODO: call update when the update button (#update) is clicked
+            d3.select("#update").on("click", update);
+
+            // TODO: call reset when the reset button (#reset) is clicked
+            d3.select("#reset").on("click", reset);            
+        }
+
+        function update() {
+            // TODO: read the value property of the selected radio button            
+            let xVar = d3.select("input[name='x-encoding']:checked").property("value");
+
+            // TODO: read the value property of the selected radio button
+            let yVar = d3.select("input[name='y-encoding']:checked").property("value");
+
+            // TODO: read whether the #use-color checkbox has been checked or not (boolean)
+            let useColor = d3.select("#use-color").property("checked");
+
+            xScale = d3.scaleLinear().domain(d3.extent(data, d => d[xVar])).range([0, width]);
+            yScale = d3.scaleLinear().domain(d3.extent(data, d => d[yVar])).range([height, 0]);
+
+            container.selectAll("circle")
+                .data(data)
+                .join("circle")
+                .transition()
+                .attr("cx", d => xScale(d[xVar]))
+                .attr("cy", d => yScale(d[yVar]))
+                // TODO: if useColor is true, call zScale. Otherwise, always return black
+                // Hint: you can use the ternary operator (a ? b : c)
+                .attr("fill", d => useColor ? zScale(d.variety) : "black")
+                .attr("r", 3)
+
+            xAxis
+                .attr("transform", `translate(${margin.left}, ${margin.top + height})`)
+                .transition()
+                .call(d3.axisBottom(xScale));
+
+            yAxis
+                .attr("transform", `translate(${margin.left}, ${margin.top})`)
+                .transition()
+                .call(d3.axisLeft(yScale));
+
+            // TODO: if use color is true, draw and show the color legend
+            // TODO: otherwise, hide the legend.
+
+            if (useColor) {
+                legend
+                    .attr("transform", `translate(${width-50}, ${height - 60})`)
+                    .call(d3.legendColor().scale(zScale));
+            } else {
+                legend.selectAll("*").remove();
+            }
+
+            
+
+        }
+
+        function reset() {
+            d3.select("input[type=radio][name=x-encoding][value='sepal.length']").property("checked", true);
+            d3.select("input[type=radio][name=y-encoding][value='sepal.width']").property("checked", true);
+
+            update();
+        }
+
+        d3.csv("https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv")
+            .then(csvData => {
+                csvData.forEach(d => {
+                    d["petal.length"] = +d["petal.length"];
+                    d["petal.width"] = +d["petal.width"];
+                    d["sepal.length"] = +d["sepal.length"];
+                    d["sepal.width"] = +d["sepal.width"];
+                });
+
+                data = csvData;
+                initialize();
+                update();
+            })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

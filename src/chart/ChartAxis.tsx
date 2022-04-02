@@ -10,27 +10,27 @@ import SimpleLineChart from "./SimpleLineChart";
 import MultiLineChart from "./MultiLineChart";
 import PieChart from "./PieChart";
 import { chartTypeState, barGroupedState, tableDataState } from "../../states";
-import type { Size, TableData, ChartProps } from "../../types";
-import { schemeCategory10 as color } from "d3-scale-chromatic";
+import type { Size, tableDataType } from "../../types";
 import Legends from "./Legends";
 
-const getValue = (d: TableData) => d.value;
-const getCharacteristic = (d: TableData) => d.characteristic;
-const getAllValueList = (tableData: TableData[]) => {
+const getValue = (d: tableDataType) => d.value as number;
+const getCharacteristic = (d: tableDataType) => d.characteristic as string;
+const getAllValueList = (tableData: tableDataType[]) => {
     const values: number[] = [];
     for (let d of tableData)
         for (let key in d)
             if (key !== "characteristic") values.push(Number(d[key]));
     return values;
 };
-const getRowSumValueList = (tableData: TableData[]) => {
+const getRowSumValueList = (tableData: tableDataType[]) => {
     const values: number[] = [];
+    const keys = Object.keys(tableData[0]).filter(
+        (key) => key !== "characteristic"
+    );
     for (let row of tableData) {
-        const rowValues = Object.values(row).filter(
-            (value) => typeof value === typeof 1
-        ) as number[];
-        console.log(rowValues);
-        values.push(rowValues.reduce((a, b) => a + b));
+        let sum = 0;
+        for (let key of keys) sum += Number(row[key]);
+        values.push(sum);
     }
     return values;
 };
@@ -61,17 +61,17 @@ export default function Charts({ width, height }: Size) {
         const yScaleDomain =
             cardinality === 2 || (cardinality > 2 && barGrouped == true)
                 ? [
-                    Math.min(...getAllValueList(tableData)) > 0
-                        ? Math.min(...getAllValueList(tableData)) * 0.7
-                        : Math.min(...getAllValueList(tableData)) * 1.1,
-                    Math.max(...getAllValueList(tableData)) * 1.1,
-                ]
+                      Math.min(...getAllValueList(tableData)) > 0
+                          ? 0
+                          : Math.min(...getAllValueList(tableData)),
+                      Math.max(...getAllValueList(tableData)),
+                  ]
                 : [
-                    Math.min(...getRowSumValueList(tableData)) > 0
-                        ? Math.min(...getRowSumValueList(tableData)) * 0.7
-                        : Math.min(...getRowSumValueList(tableData)) * 1.1,
-                    Math.max(...getRowSumValueList(tableData)) * 1.1,
-                ];
+                      Math.min(...getRowSumValueList(tableData)) > 0
+                          ? 0
+                          : Math.min(...getRowSumValueList(tableData)),
+                      Math.max(...getRowSumValueList(tableData)),
+                  ];
         return scaleLinear<number>({
             range: [yMax, 0],
             round: true,

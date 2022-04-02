@@ -1,57 +1,96 @@
-import { useMemo } from "react";
 import { Circle, LinePath } from "@visx/shape";
-import { Group } from "@visx/group";
-import { AxisBottom, AxisLeft } from "@visx/axis";
-import { scaleBand, scaleLinear } from "@visx/scale";
 import { useRecoilState } from "recoil";
-import { tableDataState, userSelectionState } from "../../states";
-import { ChartProps, TableData } from "../../types";
-import { schemeCategory10 as color } from "d3-scale-chromatic";
+import {
+    tableDataState,
+    userSelectionState,
+    featureTableState,
+} from "../../states";
+import { Element, ChartProps } from "../../types";
+import { schemeCategory10 as nonSelectedColor } from "d3-scale-chromatic";
 import { curveLinear } from "@visx/curve";
+import { hsl } from "d3-color";
 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 };
 
-const getValue = (d: TableData) => d.value;
-const getCharacteristic = (d: TableData) => d.characteristic;
+const selectedColor = nonSelectedColor.map((c) =>
+    hsl(hsl(c).h, hsl(c).s, hsl(c).l * 1.5)
+);
 
 export default function SimpleLineChart({ xScale, yScale }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState);
-    const [userSelection, setUserSelection] = useRecoilState(userSelectionState);
+    const [userSelection, setUserSelection] =
+        useRecoilState(userSelectionState);
+    const [featureTable, setFeatureTable] = useRecoilState(featureTableState);
     const scaleWidth = xScale.bandwidth();
     return (
         <>
+            <LinePath
+                curve={curveLinear}
+                data={tableData}
+                x={(d) =>
+                    (xScale(d.characteristic as string) ?? 0) + scaleWidth / 2
+                }
+                y={(d) => yScale(d.value as number) ?? 0}
+                stroke={nonSelectedColor[0]}
+                strokeWidth={2}
+            />
             {tableData.map((d, i) => {
-                const characteristic = getCharacteristic(d);
-                const value = getValue(d);
+                const characteristic = d.characteristic as string;
+                const value = d.value as number;
 
                 return (
                     <Circle
                         key={i}
-                        r={10}
-                        fill={color[0]}
+                        r={userSelection.some(
+                            (d) => d.key === `value-${characteristic}-${value}`
+                        ) ? 10 : 5}
                         cx={(xScale(characteristic) ?? 0) + scaleWidth / 2}
                         cy={yScale(value)}
-                        opacity={userSelection.includes(`${i} 0`) ? 1 : 0.5}
-                        onClick={(i) => {
-                            if (userSelection.includes(`${i} 0`))
+                        fill={
+                            userSelection.some(
+                                (d) =>
+                                    d.key === `value-${characteristic}-${value}`
+                            )
+                                ? String(selectedColor[0])
+                                : (nonSelectedColor[0] as string)
+                        }
+                        onClick={() => {
+                            const columnFeature = featureTable["value"];
+                            // get feature key by value
+                            const feature = Object.keys(columnFeature).find(
+                                (key) => columnFeature[key] === characteristic
+                            );
+                            if (
+                                userSelection.some(
+                                    (d) =>
+                                        d.key ===
+                                        `value-${characteristic}-${value}`
+                                )
+                            ) {
                                 setUserSelection(
-                                    userSelection.filter((d) => d !== `${i} 0`)
+                                    userSelection.filter(
+                                        (d) =>
+                                            d.key !==
+                                            `value-${characteristic}-${value}`
+                                    )
                                 );
-                            else setUserSelection([...userSelection, `${i} 0`]);
+                            } else {
+                                const selectedElement = new Element(
+                                    `value-${characteristic}-${value}`,
+                                    feature,
+                                    value,
+                                    characteristic,
+                                    "value",
+                                    "element"
+                                );
+                                setUserSelection([
+                                    ...userSelection,
+                                    selectedElement,
+                                ]);
+                            }
                         }}
                     />
                 );
             })}
-            <LinePath
-                curve={curveLinear}
-                data={tableData}
-                x={(d) => (xScale(getCharacteristic(d)) ?? 0) + scaleWidth / 2}
-                y={(d) => yScale(getValue(d)) ?? 0}
-                stroke={color[0]}
-                opacity={1}
-                strokeWidth={2}
-            />
-            ;
         </>
     );
 }

@@ -1,28 +1,16 @@
 import { Box, VStack, Divider, Heading, Center, Text } from "@chakra-ui/react";
-import {
-    tableValueInfoState,
-    tableTitleState,
-    tableDataState,
-    userSelectionState,
-} from "../../states";
+import { tableTitleState, tableDataState } from "../../states";
 import { useRecoilState } from "recoil";
 
 import ParentSize from "@visx/responsive/lib/components/ParentSize";
 
 import Chart from "./ChartAxis";
-import { Group } from "@visx/group";
 
 const chartHeight = 400;
-
 
 const ChartRenderer = ({ minH }: any) => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
     const [tableData, setTableData] = useRecoilState(tableDataState);
-    const [tableValueInfo, setTableValueInfo] =
-        useRecoilState(tableValueInfoState);
-    
-    const [userSelection, setUserSelection] =
-        useRecoilState(userSelectionState);
 
     return (
         <Box p={6} w="full" minH={minH}>
