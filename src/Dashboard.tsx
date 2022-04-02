@@ -35,10 +35,10 @@ const Dashboard = () => (
                 colSpan={{ base: 1, lg: 2 }}
             >
                 <ChartRenderer minH={400} />
-                <EntitySelector minH={300} />
+                <CaptionEditor></CaptionEditor>
             </GridItem>
             <GridItem bg="white" boxShadow="base" borderRadius={20}>
-                <CaptionEditor></CaptionEditor>
+                <EntitySelector minH={300} />
             </GridItem>
         </Grid>
     </Container>

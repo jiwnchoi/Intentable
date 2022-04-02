@@ -18,7 +18,7 @@ const ChartRenderer = ({ minH }: any) => {
                 <Heading fontSize="xl">Visualization</Heading>
                 <Divider />
                 <Center>
-                    <Heading fontSize={"lg"}>{tableTitle}</Heading>
+                    <Heading fontSize={"xl"}>{tableTitle}</Heading>
                 </Center>
                 {tableData.length ? (
                     <ParentSize>

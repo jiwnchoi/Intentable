@@ -16,8 +16,11 @@ import {
     Center,
     Button,
     Textarea,
+    Flex,
+    Spacer,
 } from "@chakra-ui/react"
 import axios from "axios"
+import { gray } from "d3-color"
 
 import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
@@ -104,22 +107,34 @@ const TableConfigureation = () => {
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Data Configuration</Heading>
                 <Divider />
-                <Button
-                    colorScheme="blue"
-                    onClick={() => {
-                        handleFetch("get_from_train_set")
-                    }}
-                    variant="solid"
-                >
-                    Load Demo From Train/Valid Set
-                </Button>
-                <Button
-                    colorScheme="orange"
-                    onClick={() => handleFetch("get_from_test_set")}
-                    variant="solid"
-                >
-                    Load Demo From Test Set
-                </Button>
+                <Flex w="full">
+                    <Button
+                        mr={2}
+                        w="full"
+                        bg="gray.500"
+                        color="white"
+                        onClick={() => {
+                            handleFetch("get_from_train_set")
+                        }}
+                        variant="solid"
+                        shadow={"base"}
+                    >
+                        Load Demo From Train Set
+                    </Button>
+                    <Spacer />
+                    <Button
+                        ml={2}
+                        w="full"
+                        bg="gray.500"
+                        color="white"
+                        shadow={"base"}
+                        onClick={() => handleFetch("get_from_test_set")}
+                        variant="solid"
+                    >
+                        Load Demo From Test Set
+                    </Button>
+                </Flex>
+
                 <Box>
                     <Text>Import Data</Text>
                     <Center minH="150px" border="1px" borderColor="gray.200" borderRadius="md">
