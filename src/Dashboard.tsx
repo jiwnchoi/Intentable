@@ -15,18 +15,15 @@ import {
     Flex,
     VStack,
     Textarea,
-} from "@chakra-ui/react";
-import ChartRenderer from "./chart/ChartRenderer";
-import TableConfigureation from "./table/TableConfigureation";
-import CaptionEditor from "./caption/CaptionEditor";
-import EntitySelector from "./entitySelector";
+} from "@chakra-ui/react"
+import ChartRenderer from "./chart/ChartRenderer"
+import TableConfigureation from "./table/TableConfigureation"
+import CaptionEditor from "./caption/CaptionEditor"
+import EntitySelector from "./entitySelector"
 
 const Dashboard = () => (
     <Container maxW={"full"} m={4}>
-        <Grid
-            templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(4, 1fr)" }}
-            gap={8}
-        >
+        <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(4, 1fr)" }} gap={8}>
             <GridItem bg="white" boxShadow="base" borderRadius={20}>
                 <TableConfigureation />
             </GridItem>
@@ -45,6 +42,6 @@ const Dashboard = () => (
             </GridItem>
         </Grid>
     </Container>
-);
+)
 
-export default Dashboard;
+export default Dashboard

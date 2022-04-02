@@ -1,9 +1,9 @@
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app"
 import { ChakraProvider } from "@chakra-ui/react"
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot } from "recoil"
 
-import '@fontsource/rajdhani';
-import "../styles/globals.css";
+import "@fontsource/rajdhani"
+import "../styles/globals.css"
 import styles from "../styles/styles"
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
             </ChakraProvider>
         </RecoilRoot>
-    );
+    )
 }
 
-export default MyApp;
+export default MyApp

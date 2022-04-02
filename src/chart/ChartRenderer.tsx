@@ -1,16 +1,16 @@
-import { Box, VStack, Divider, Heading, Center, Text } from "@chakra-ui/react";
-import { tableTitleState, tableDataState } from "../../states";
-import { useRecoilState } from "recoil";
+import { Box, VStack, Divider, Heading, Center, Text } from "@chakra-ui/react"
+import { tableTitleState, tableDataState } from "../../states"
+import { useRecoilState } from "recoil"
 
-import ParentSize from "@visx/responsive/lib/components/ParentSize";
+import ParentSize from "@visx/responsive/lib/components/ParentSize"
 
-import Chart from "./ChartAxis";
+import Chart from "./ChartAxis"
 
-const chartHeight = 400;
+const chartHeight = 400
 
 const ChartRenderer = ({ minH }: any) => {
-    const [tableTitle, setTableTitle] = useRecoilState(tableTitleState);
-    const [tableData, setTableData] = useRecoilState(tableDataState);
+    const [tableTitle, setTableTitle] = useRecoilState(tableTitleState)
+    const [tableData, setTableData] = useRecoilState(tableDataState)
 
     return (
         <Box p={6} w="full" minH={minH}>
@@ -22,20 +22,16 @@ const ChartRenderer = ({ minH }: any) => {
                 </Center>
                 {tableData.length ? (
                     <ParentSize>
-                        {({ width, height }) => (
-                            <Chart width={width} height={chartHeight} />
-                        )}
+                        {({ width, height }) => <Chart width={width} height={chartHeight} />}
                     </ParentSize>
                 ) : (
                     <Center minH={300}>
-                        <Text fontSize={"xl"}>
-                            Please import data or load Demo!
-                        </Text>
+                        <Text fontSize={"xl"}>Please import data or load Demo!</Text>
                     </Center>
                 )}
             </VStack>
         </Box>
-    );
-};
+    )
+}
 
-export default ChartRenderer;
+export default ChartRenderer

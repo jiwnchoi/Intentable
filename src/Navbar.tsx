@@ -9,8 +9,8 @@ import {
     Center,
     Link,
     useColorModeValue,
-} from "@chakra-ui/react";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
+} from "@chakra-ui/react"
+import { ExternalLinkIcon } from "@chakra-ui/icons"
 
 export default function Navbar() {
     return (
@@ -39,5 +39,5 @@ export default function Navbar() {
             </Container>
             <Divider />
         </Box>
-    );
+    )
 }

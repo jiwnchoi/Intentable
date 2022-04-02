@@ -1,8 +1,8 @@
-import type { NextPage } from 'next'
-import { Container, Center, Divider, Box } from '@chakra-ui/react';
-import Navbar from '../src/Navbar';
-import Footer from '../src/Footer'
-import Dashboard from '../src/Dashboard'
+import type { NextPage } from "next"
+import { Container, Center, Divider, Box } from "@chakra-ui/react"
+import Navbar from "../src/Navbar"
+import Footer from "../src/Footer"
+import Dashboard from "../src/Dashboard"
 
 const Home: NextPage = () => {
     return (
@@ -14,7 +14,7 @@ const Home: NextPage = () => {
             </Center>
             <Footer position="absolute" bottom={0}></Footer>
         </Box>
-    );
+    )
 }
 
 export default Home

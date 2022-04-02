@@ -7,7 +7,7 @@ import {
     Divider,
     useColorModeValue,
     Flex,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 
 export default function Footer({ position, bottom }: any) {
     return (
@@ -32,11 +32,7 @@ export default function Footer({ position, bottom }: any) {
             >
                 <Link href="https://idclab.skku.edu">
                     <Flex>
-                        <Text
-                            fontFamily="Rajdhani"
-                            fontWeight="bold"
-                            fontSize="xl"
-                        >
+                        <Text fontFamily="Rajdhani" fontWeight="bold" fontSize="xl">
                             IDC
                         </Text>
                         <Text fontFamily="Rajdhani" fontSize="xl">
@@ -53,5 +49,5 @@ export default function Footer({ position, bottom }: any) {
                 </Link>
             </Container>
         </Box>
-    );
+    )
 }
