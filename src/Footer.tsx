@@ -23,7 +23,7 @@ export default function Footer({ position, bottom }: any) {
             <Divider />
             <Container
                 as={Stack}
-                maxW={"full"}
+                maxW={"8xl"}
                 py={4}
                 direction={"column"}
                 justify={"left"}

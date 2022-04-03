@@ -21,6 +21,7 @@ import { useEffect, useState } from "react"
 export default function EntitySelector({ minH }: any) {
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
     const [isAlert, setIsAlert] = useState(false)
+    
 
     useEffect(() => {
         const length = userSelection.filter((e) => e.type !== "overall").length
@@ -58,14 +59,14 @@ export default function EntitySelector({ minH }: any) {
                 // leftIcon={<AddIcon w={4} h={4} />}
                 bg={isOverallSelected() ? "gray.500" : "gray.100"}
                 color={isOverallSelected() ? "gray.100" : "gray.500"}
-                fontSize={"xl"}
+                fontSize={"md"}
                 onClick={includeOverall}
                 w="full"
                 borderRadius={20}
-                minH={81}
+                minH={66}
                 mb={4}
             >
-                {isOverallSelected() ? "Overview" : "Add Overview"}
+                {isOverallSelected() ? "Remove Overview" : "Add Overview"}
             </Button>
             {isAlert ? (
                 <Alert status="error" mb={4}>

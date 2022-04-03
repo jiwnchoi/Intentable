@@ -22,7 +22,7 @@ import CaptionEditor from "./caption/CaptionEditor"
 import EntitySelector from "./entitySelector"
 
 const Dashboard = () => (
-    <Container maxW={"full"} m={4}>
+    <Container maxW={"8xl"} m={4}>
         <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(4, 1fr)" }} gap={8}>
             <GridItem bg="white" boxShadow="base" borderRadius={20}>
                 <TableConfigureation />

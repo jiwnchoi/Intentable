@@ -109,7 +109,7 @@ const TableConfigureation = () => {
                 <Divider />
                 <Flex w="full">
                     <Button
-                        mr={2}
+                        mr={1}
                         w="full"
                         bg="gray.500"
                         color="white"
@@ -119,11 +119,11 @@ const TableConfigureation = () => {
                         variant="solid"
                         shadow={"base"}
                     >
-                        Load Demo From Train Set
+                        Load Train Set
                     </Button>
                     <Spacer />
                     <Button
-                        ml={2}
+                        ml={1}
                         w="full"
                         bg="gray.500"
                         color="white"
@@ -131,7 +131,7 @@ const TableConfigureation = () => {
                         onClick={() => handleFetch("get_from_test_set")}
                         variant="solid"
                     >
-                        Load Demo From Test Set
+                        Load Test Set
                     </Button>
                 </Flex>
 

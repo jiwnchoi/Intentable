@@ -12,19 +12,22 @@ import {
     Spacer,
 } from "@chakra-ui/react"
 import { Element } from "../../types"
-import { schemeCategory10 as color } from "d3-scale-chromatic"
+import { schemeCategory10 } from "d3-scale-chromatic"
 import { useRecoilState } from "recoil"
-import { tableDataState, userSelectionState } from "../../states"
+import { tableDataState, userSelectionState, chartTypeState } from "../../states"
 import { scaleOrdinal } from "@visx/scale"
+import { hsl } from "d3-color"
 
 export default function SelectionList({ selection }: { selection: Element }) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
+    const [chartType, setChartType] = useRecoilState(chartTypeState)
     const keys = Object.keys(tableData[0]).filter((k) => k !== "characteristic")
+    const selectedColor = schemeCategory10.map((c) => String(hsl(hsl(c).h, hsl(c).s, hsl(c).l * 1.5)))
 
     const ordinalColorScale = scaleOrdinal({
-        domain: keys,
-        range: [...color],
+        domain: chartType !== 'arc' ? keys : tableData.map((d) => d.characteristic),
+        range: [...schemeCategory10],
     })
 
     return (
@@ -32,12 +35,12 @@ export default function SelectionList({ selection }: { selection: Element }) {
             justifyContent={"space-between"}
             shadow="base"
             borderRadius={20}
-            minH={50}
             pt={4}
             pb={2}
             px={6}
             color={"white"}
-            bg={ordinalColorScale(selection.column)}
+            bg={ordinalColorScale(
+                chartType !== "arc" ? selection.column : selection.row)}
             w="full"
             onClick={() => {
                 const newSelection = userSelection.filter((e) => e.key !== selection.key)
@@ -46,18 +49,18 @@ export default function SelectionList({ selection }: { selection: Element }) {
         >
             <Flex w="full" justifyContent={"space-between"}>
                 <Box>
-                    <Text fontSize={"md"}>
+                    <Text fontSize={"sm"}>
                         {selection.column !== "value" ? selection.column : ""} {selection.row}
                     </Text>
                 </Box>
                 <Spacer />
                 <Box>
-                    <Heading fontSize={"md"}>{selection.feature}</Heading>
+                    <Heading fontSize={"sm"}>{selection.feature}</Heading>
                 </Box>
             </Flex>
 
             <Divider />
-            <Heading fontSize={"2xl"}>{selection.value}</Heading>
+            <Heading fontSize={"md"}>{selection.value}</Heading>
         </VStack>
 
         // <>
