@@ -4,12 +4,12 @@ import { featureTableState, tableDataState, userSelectionState } from "../../sta
 import { ChartProps, Selection, Element } from "../../types"
 import { schemeCategory10 as nonSelectedColor } from "d3-scale-chromatic"
 import { hsl } from "d3-color"
+import { checkUserSelection, modifyUserSelection } from "../util/userSelectionUtils"
 
 const selectedColor = nonSelectedColor.map((c) => hsl(hsl(c).h, hsl(c).s, hsl(c).l * 1.5))
 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }
 
-export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProps) {
+export default function SimpleBarChart({ xScale, yScale, xMax, yMax, margins }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
     const [featureTable, setFeatureTable] = useRecoilState(featureTableState)
@@ -22,6 +22,7 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProp
                 const barHeight = yMax - (yScale(value) ?? 0)
                 const barX = xScale(characteristic) ?? 0
                 const barY = yScale(value) + margins.top ?? 0
+                const key = "value"
                 return (
                     <Bar
                         key={`bar-${characteristic}`}
@@ -30,37 +31,20 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProp
                         width={barWidth}
                         height={barHeight}
                         fill={
-                            userSelection.some((d) => d.key === `value-${characteristic}-${value}`)
+                            checkUserSelection(userSelection, key, characteristic, value)
                                 ? String(selectedColor[0])
                                 : (nonSelectedColor[0] as string)
                         }
                         onClick={() => {
-                            const columnFeature = featureTable["value"]
-                            // get feature key by value
-                            const feature = Object.keys(columnFeature).find(
-                                (key) => columnFeature[key] === characteristic
-                            )
-                            if (
-                                userSelection.some(
-                                    (d) => d.key === `value-${characteristic}-${value}`
-                                )
-                            ) {
-                                setUserSelection(
-                                    userSelection.filter(
-                                        (d) => d.key !== `value-${characteristic}-${value}`
-                                    )
-                                )
-                            } else {
-                                const selectedElement = new Element(
-                                    `value-${characteristic}-${value}`,
-                                    feature,
-                                    value,
+                            setUserSelection(
+                                modifyUserSelection(
+                                    userSelection,
+                                    featureTable,
+                                    key,
                                     characteristic,
-                                    "value",
-                                    "element"
+                                    value
                                 )
-                                setUserSelection([...userSelection, selectedElement])
-                            }
+                            )
                         }}
                     />
                 )

@@ -5,14 +5,14 @@ import { ChartProps, tableDataType, Element } from "../../types"
 import { schemeCategory10 as color } from "d3-scale-chromatic"
 import { scaleOrdinal } from "@visx/scale"
 import { hsl } from "d3-color"
+import { checkUserSelection, modifyUserSelection } from "../util/userSelectionUtils"
 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }
 
 const getValue = (d: tableDataType) => d.value as number
 const getSelectedColor = (color: string) =>
     String(hsl(hsl(color).h, hsl(color).s, hsl(color).l * 1.5))
 
-export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProps) {
+export default function SimpleBarChart({ xScale, yScale, xMax, yMax, margins }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
     const [featureTable, setFeatureTable] = useRecoilState(featureTableState)
@@ -36,8 +36,9 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProp
             {(barStacks) =>
                 barStacks.map((barStack) =>
                     barStack.bars.map((bar) => {
-                        const characteristic = bar.bar.data.characteristic
+                        const characteristic = bar.bar.data.characteristic as string
                         const value = bar.bar.data[bar.key] as number
+                        const key = bar.key as string
                         return (
                             <Bar
                                 key={`bar-stack-${barStack.index}-${bar.index}`}
@@ -46,41 +47,18 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax }: ChartProp
                                 width={bar.width}
                                 height={bar.height}
                                 fill={
-                                    userSelection.some(
-                                        (d) => d.key === `${bar.key}-${characteristic}-${value}`
-                                    )
+                                    checkUserSelection(userSelection, key, characteristic, value)
                                         ? getSelectedColor(bar.color)
                                         : bar.color
                                 }
                                 onClick={() => {
-                                    console.log(bar)
-                                    const columnFeature = featureTable[bar.key]
-                                    const feature = Object.keys(columnFeature).find(
-                                        (key) => columnFeature[key] === characteristic
-                                    )
-                                    if (
-                                        userSelection.some(
-                                            (d) => d.key === `${bar.key}-${characteristic}-${value}`
-                                        )
-                                    ) {
-                                        setUserSelection(
-                                            userSelection.filter(
-                                                (d) =>
-                                                    d.key !==
-                                                    `${bar.key}-${characteristic}-${value}`
-                                            )
-                                        )
-                                    } else {
-                                        const selectedElement = new Element(
-                                            `${bar.key}-${characteristic}-${value}`,
-                                            feature,
-                                            value,
-                                            String(characteristic),
-                                            bar.key,
-                                            "element"
-                                        )
-                                        setUserSelection([...userSelection, selectedElement])
-                                    }
+                                    setUserSelection(modifyUserSelection(
+                                        userSelection,
+                                        featureTable,
+                                        key,
+                                        characteristic,
+                                        value
+                                    ))
                                 }}
                             />
                         )

@@ -50,3 +50,8 @@ export const featureTableState = atom<{ [colname: string]: columnFeature }>({
     key: "featureTable",
     default: {},
 })
+
+export const hasOverviewState = atom({
+    key: "hasOverview",
+    default: true,
+})

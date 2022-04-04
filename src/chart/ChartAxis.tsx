@@ -32,7 +32,7 @@ const getRowSumValueList = (tableData: tableDataType[]) => {
     return values
 }
 
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }
+const margins = { top: 10, right: 10, bottom: 40, left: 50 }
 
 export default function Charts({ width, height }: Size) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
@@ -137,22 +137,28 @@ export default function Charts({ width, height }: Size) {
                                 scale={xScale}
                                 stroke="#000"
                                 tickStroke="#000"
-                                tickLabelProps={(d, i) => ({
-                                    textAnchor: "middle",
-                                    fontSize: 12,
-                                })}
+                                tickLabelProps={(d, i) => {
+                                    let l = 0
+                                    if (String(d).length > 20 && i % 2 == 0) l = 15
+
+                                    return {
+                                        // transform: `translate(0, ${l})`,
+                                        textAnchor: "middle",
+                                        fontSize: 12,
+                                    }
+                                }}
                             />
                         </>
                     ) : null}
                 </Group>
             </svg>
             {chartType === "arc" ? (
-                <Legends keys={tableData.map(getCharacteristic)} legendGlyphSize={15} />
+                <Legends keys={tableData.map(getCharacteristic)} legendGlyphSize={12} />
             ) : null}
             {cardinality > 2 ? (
                 <Legends
                     keys={Object.keys(tableData[0]).filter((d) => d !== "characteristic")}
-                    legendGlyphSize={15}
+                    legendGlyphSize={12}
                 />
             ) : null}
         </>

@@ -11,7 +11,7 @@ import {
     AlertTitle,
     HStack,
 } from "@chakra-ui/react"
-import { userSelectionState } from "../../states"
+import { userSelectionState, hasOverviewState } from "../../states"
 import { useRecoilState } from "recoil"
 import SelectionList from "./list"
 import { Element } from "../../types"
@@ -20,6 +20,7 @@ import { useEffect, useState } from "react"
 
 export default function EntitySelector({ minH }: any) {
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
+    const [hasOverview, setHasOverview] = useRecoilState(hasOverviewState)
     const [isAlert, setIsAlert] = useState(false)
     
 
@@ -38,7 +39,7 @@ export default function EntitySelector({ minH }: any) {
         if (userSelection.length > 0 && userSelection[0].key === "overall") {
             setUserSelection(userSelection.filter((d) => d.key !== "overall"))
         } else {
-            const overallSelection = new Element("overall", "overall", 0, "", "", "overall")
+            const overallSelection = new Element("overall", 0, "", "", "overall")
             setUserSelection([overallSelection, ...userSelection])
         }
     }
@@ -57,16 +58,16 @@ export default function EntitySelector({ minH }: any) {
             <Divider mb={4} />
             <Button
                 // leftIcon={<AddIcon w={4} h={4} />}
-                bg={isOverallSelected() ? "gray.500" : "gray.100"}
-                color={isOverallSelected() ? "gray.100" : "gray.500"}
+                bg={hasOverview ? "gray.500" : "gray.100"}
+                color={hasOverview ? "gray.100" : "gray.500"}
                 fontSize={"md"}
-                onClick={includeOverall}
+                onClick={() => setHasOverview(!hasOverview)}
                 w="full"
                 borderRadius={20}
                 minH={66}
                 mb={4}
             >
-                {isOverallSelected() ? "Remove Overview" : "Add Overview"}
+                {hasOverview ? "Remove Overview" : "Add Overview"}
             </Button>
             {isAlert ? (
                 <Alert status="error" mb={4}>

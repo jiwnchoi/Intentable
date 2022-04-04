@@ -5,6 +5,7 @@ import { ChartProps, Selection, Element } from "../../types"
 import { schemeCategory10 as nonSelectedColor } from "d3-scale-chromatic"
 import { hsl } from "d3-color"
 import { Group } from "@visx/group"
+import { checkUserSelection, modifyUserSelection } from "../util/userSelectionUtils"
 
 const selectedColor = nonSelectedColor.map((c) => hsl(hsl(c).h, hsl(c).s, hsl(c).l * 1.5))
 
@@ -30,46 +31,32 @@ export default function SimpleBarChart({ xMax, yMax, margins }: ChartProps) {
                     return pie.arcs.map((arc, i) => {
                         const characteristic = arc.data.characteristic as string
                         const value = arc.data.value as number
+                        const key = "value"
                         const arcPath = pie.path(arc) ?? ""
                         return (
                             <Group key={i}>
                                 <path
                                     d={arcPath}
                                     fill={
-                                        userSelection.some(
-                                            (d) => d.key === `value-${characteristic}-${value}`
+                                        checkUserSelection(
+                                            userSelection,
+                                            key,
+                                            characteristic,
+                                            value
                                         )
                                             ? String(selectedColor[i])
                                             : (nonSelectedColor[i] as string)
                                     }
                                     onClick={() => {
-                                        const columnFeature = featureTable["value"]
-                                        // get feature key by value
-                                        const feature = Object.keys(columnFeature).find(
-                                            (key) => columnFeature[key] === characteristic
-                                        )
-                                        if (
-                                            userSelection.some(
-                                                (d) => d.key === `value-${characteristic}-${value}`
-                                            )
-                                        ) {
-                                            setUserSelection(
-                                                userSelection.filter(
-                                                    (d) =>
-                                                        d.key !== `value-${characteristic}-${value}`
-                                                )
-                                            )
-                                        } else {
-                                            const selectedElement = new Element(
-                                                `value-${characteristic}-${value}`,
-                                                feature,
-                                                value,
+                                        setUserSelection(
+                                            modifyUserSelection(
+                                                userSelection,
+                                                featureTable,
+                                                key,
                                                 characteristic,
-                                                "value",
-                                                "element"
+                                                value
                                             )
-                                            setUserSelection([...userSelection, selectedElement])
-                                        }
+                                        )
                                     }}
                                 />
                             </Group>

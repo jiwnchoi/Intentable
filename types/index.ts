@@ -46,29 +46,46 @@ export type MultiColumnData = {
 }
 
 export type columnFeature = {
-    [index: string]: string | undefined
-    max: string
-    min: string
-    recent?: string
-    past?: string
+    max: Element
+    min: Element
+    recent?: Element
+    past?: Element
+}
+
+export type featureTableType = {
+    [colname: string]: columnFeature
 }
 
 export class Element {
+    key: string
+    feature: string | undefined
+    value: number
+    row: string
+    column: string
+    type: "overall" | "element"
+
     constructor(
-        public key: string,
-        public feature: string | undefined,
-        public value: number,
-        public row: string,
-        public column: string,
-        public type: "overall" | "element"
-    ) {}
+        feature: string | undefined,
+        value: number,
+        row: string,
+        column: string,
+        type: "overall" | "element"
+    ) {
+        this.key = `${column}-${row}-${value}`
+        this.feature = feature
+        this.value = value
+        this.row = row
+        this.column = column
+        this.type = type
+    }
 
     get() {
-        if (this.type === "overall") {
-            return `<selection_item>overall</selection_item>`
-        }
         return `<selection_item>feature=${this.feature ? this.feature : "none"}, row=${
             this.row
         }, column=${this.column}, value=${this.value}</selection_item>`
+    }
+
+    setkey(key: string) {
+        this.key = key
     }
 }

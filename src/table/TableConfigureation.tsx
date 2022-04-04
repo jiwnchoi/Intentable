@@ -34,7 +34,7 @@ import {
     featureTableState,
     userSelectionState,
 } from "../../states"
-import { fetchDemo, columnFeature } from "../../types"
+import { fetchDemo, columnFeature, Element, featureTableType } from "../../types"
 
 const TableConfigureation = () => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState)
@@ -74,7 +74,8 @@ const TableConfigureation = () => {
         setValueInfo(data.value_info)
         setRowType(data.row_type)
 
-        const tmpFeatureTable: { [colname: string]: columnFeature } = {}
+        const tmpFeatureTable: featureTableType = {}
+
         for (const columnName of columnNames) {
             const characteristics = data.table.map((d) => d.characteristic)
             const values = data.table.map((d) => d[columnName])
@@ -86,18 +87,42 @@ const TableConfigureation = () => {
                 return a < b ? a : b
             })
 
-            tmpFeatureTable[columnName] =
-                data.row_type === "DATE"
-                    ? ({
-                          past: characteristics[0],
-                          recent: characteristics[values.length - 1],
-                          max: characteristics[values.indexOf(max)],
-                          min: characteristics[values.indexOf(min)],
-                      } as columnFeature)
-                    : ({
-                          max: characteristics[values.indexOf(max)],
-                          min: characteristics[values.indexOf(min)],
-                      } as columnFeature)
+            let maxminFeature = {
+                max: new Element(
+                    "max",
+                    max as number,
+                    characteristics[values.indexOf(max)] as string,
+                    columnName,
+                    "element"
+                ),
+                min: new Element(
+                    "min",
+                    min as number,
+                    characteristics[values.indexOf(min)] as string,
+                    columnName,
+                    "element"
+                ),
+            }
+            let dateFeature = {}
+            if (data.row_type === "DATE") {
+                dateFeature = {
+                    past: new Element(
+                        "past",
+                        values[0] as number,
+                        characteristics[0] as string,
+                        columnName,
+                        "element"
+                    ),
+                    recent: new Element(
+                        "recent",
+                        values[values.length - 1] as number,
+                        characteristics[values.length - 1] as string,
+                        columnName,
+                        "element"
+                    ),
+                }
+            }
+            tmpFeatureTable[columnName] = { ...maxminFeature, ...dateFeature }
         }
         setFeatureTable(tmpFeatureTable)
     }

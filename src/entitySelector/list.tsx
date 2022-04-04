@@ -34,9 +34,9 @@ export default function SelectionList({ selection }: { selection: Element }) {
         <VStack
             justifyContent={"space-between"}
             shadow="base"
-            borderRadius={20}
-            pt={4}
-            pb={2}
+            borderRadius={15}
+            pt={2}
+            pb={1}
             px={6}
             color={"white"}
             bg={ordinalColorScale(

@@ -7,11 +7,12 @@ import { curveLinear } from "@visx/curve"
 import { hsl } from "d3-color"
 import { useMemo } from "react"
 import { scaleBand, scaleOrdinal } from "@visx/scale"
+import { checkUserSelection, modifyUserSelection } from "../util/userSelectionUtils"
 
 const getSelectedColor = (color: string) =>
     String(hsl(hsl(color).h, hsl(color).s, hsl(color).l * 1.5))
 
-export default function MultiLineChart({ xScale, yScale }: ChartProps) {
+export default function MultiLineChart({ xScale, yScale, margins }: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
     const [featureTable, setFeatureTable] = useRecoilState(featureTableState)
@@ -49,8 +50,11 @@ export default function MultiLineChart({ xScale, yScale }: ChartProps) {
                                 <Circle
                                     key={i}
                                     r={
-                                        userSelection.some(
-                                            (d) => d.key === `${key}-${characteristic}-${value}`
+                                        checkUserSelection(
+                                            userSelection,
+                                            key,
+                                            characteristic,
+                                            value
                                         )
                                             ? 10
                                             : 5
@@ -58,41 +62,25 @@ export default function MultiLineChart({ xScale, yScale }: ChartProps) {
                                     cx={(xScale(characteristic) ?? 0) + scaleWidth / 2}
                                     cy={yScale(value)}
                                     fill={
-                                        userSelection.some(
-                                            (d) => d.key === `${key}-${characteristic}-${value}`
+                                        checkUserSelection(
+                                            userSelection,
+                                            key,
+                                            characteristic,
+                                            value
                                         )
                                             ? selectedColor
                                             : nonSelectedColor
                                     }
                                     onClick={() => {
-                                        const columnFeature = featureTable[key]
-                                        // get feature key by value
-                                        const feature = Object.keys(columnFeature).find(
-                                            (key) => columnFeature[key] === characteristic
-                                        )
-                                        if (
-                                            userSelection.some(
-                                                (d) => d.key === `${key}-${characteristic}-${value}`
-                                            )
-                                        ) {
-                                            setUserSelection(
-                                                userSelection.filter(
-                                                    (d) =>
-                                                        d.key !==
-                                                        `${key}-${characteristic}-${value}`
-                                                )
-                                            )
-                                        } else {
-                                            const selectedElement = new Element(
-                                                `${key}-${characteristic}-${value}`,
-                                                feature,
-                                                value,
-                                                characteristic,
+                                        setUserSelection(
+                                            modifyUserSelection(
+                                                userSelection,
+                                                featureTable,
                                                 key,
-                                                "element"
+                                                characteristic,
+                                                value
                                             )
-                                            setUserSelection([...userSelection, selectedElement])
-                                        }
+                                        )
                                     }}
                                 />
                             )

@@ -19,9 +19,9 @@ export default function Legends({
         <LegendOrdinal scale={ordinalColorScale}>
             {(legend) => (
                 <Center>
-                    <Flex flexDirection="row" fontSize={14}>
+                    <Flex flexDirection="row" fontSize={legendGlyphSize}>
                         {legend.map((entry, i) => (
-                            <LegendItem key={i} margin="0px 20px">
+                            <LegendItem key={i}>
                                 <svg width={legendGlyphSize} height={legendGlyphSize}>
                                     <circle
                                         cx={legendGlyphSize / 2}
@@ -30,7 +30,7 @@ export default function Legends({
                                         fill={entry.value}
                                     />
                                 </svg>
-                                <LegendLabel align="center" margin={10}>
+                                <LegendLabel align="left" margin={"0px 10px 0px 3px"}>
                                     {entry.text}
                                 </LegendLabel>
                             </LegendItem>

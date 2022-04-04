@@ -8,12 +8,12 @@ import { Group } from "@visx/group"
 import { useMemo } from "react"
 import { hsl } from "d3-color"
 import { Element } from "../../types"
-const margins = { top: 20, right: 20, bottom: 40, left: 40 }
+import { checkUserSelection, modifyUserSelection } from "../util/userSelectionUtils"
 
 const getSelectedColor = (color: string) =>
     String(hsl(hsl(color).h, hsl(color).s, hsl(color).l * 1.5))
 
-export default function GroupedBarChart({ xScale, yScale, xMax, yMax }: ChartProps) {
+export default function GroupedBarChart({ xScale, yScale, xMax, yMax, margins}: ChartProps) {
     const [tableData, setTableData] = useRecoilState(tableDataState)
     const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
     const [featureTable, setFeatureTable] = useRecoilState(featureTableState)
@@ -55,10 +55,14 @@ export default function GroupedBarChart({ xScale, yScale, xMax, yMax }: ChartPro
             >
                 {(barGroups) =>
                     barGroups.map((barGroup) => {
-                        const characteristic = getCharacteristics(barGroup.index)
+                        const characteristic = getCharacteristics(barGroup.index) as string
                         return (
                             <Group key={`bar-group-${barGroup.index}`} left={barGroup.x0}>
-                                {barGroup.bars.map((bar) => (
+                                {barGroup.bars.map((bar) => { 
+                                    const key = bar.key as string
+                                    const value = bar.value as number
+                                    
+                                    return (
                                     <Bar
                                         key={`bar-group-bar-${barGroup.index}-${bar.index}`}
                                         x={bar.x}
@@ -66,50 +70,24 @@ export default function GroupedBarChart({ xScale, yScale, xMax, yMax }: ChartPro
                                         width={bar.width}
                                         height={bar.height}
                                         fill={
-                                            userSelection.some(
-                                                (d) =>
-                                                    d.key ===
-                                                    `${bar.key}-${characteristic}-${bar.value}`
-                                            )
+                                            checkUserSelection(userSelection, key, characteristic, value)
                                                 ? getSelectedColor(bar.color)
                                                 : bar.color
                                         }
                                         onClick={() => {
-                                            const columnFeature = featureTable[bar.key]
-                                            const feature = Object.keys(columnFeature).find(
-                                                (key) => columnFeature[key] === characteristic
+                                            setUserSelection(
+                                                modifyUserSelection(
+                                                    userSelection,
+                                                    featureTable,
+                                                    key,
+                                                    characteristic,
+                                                    value
+                                                )
                                             )
-                                            if (
-                                                userSelection.some(
-                                                    (d) =>
-                                                        d.key ===
-                                                        `${bar.key}-${characteristic}-${bar.value}`
-                                                )
-                                            ) {
-                                                setUserSelection(
-                                                    userSelection.filter(
-                                                        (d) =>
-                                                            d.key !==
-                                                            `${bar.key}-${characteristic}-${bar.value}`
-                                                    )
-                                                )
-                                            } else {
-                                                const selectedElement = new Element(
-                                                    `${bar.key}-${characteristic}-${bar.value}`,
-                                                    feature,
-                                                    bar.value,
-                                                    String(characteristic),
-                                                    bar.key,
-                                                    "element"
-                                                )
-                                                setUserSelection([
-                                                    ...userSelection,
-                                                    selectedElement,
-                                                ])
-                                            }
                                         }}
                                     />
-                                ))}
+                                )}
+                                )}
                             </Group>
                         )
                     })
