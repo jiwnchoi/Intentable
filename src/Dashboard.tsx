@@ -19,26 +19,28 @@ import {
 import ChartRenderer from "./chart/ChartRenderer"
 import TableConfigureation from "./table/TableConfigureation"
 import CaptionEditor from "./caption/CaptionEditor"
-import EntitySelector from "./entitySelector"
+import IntentList from "./inetntList"
+import IntentEditor from "./intentEditor"
 
 const Dashboard = () => (
     <Container maxW={"8xl"} m={4}>
-        <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(4, 1fr)" }} gap={8}>
-            <GridItem bg="white" boxShadow="base" borderRadius={20}>
-                <TableConfigureation />
+        <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(5, 1fr)" }} gap={8}>
+            <GridItem colSpan={{ base: 1, lg: 2 }}>
+                <Box bg="white" boxShadow="base" borderRadius={20} mb={8}>
+                    <TableConfigureation />
+                </Box>
+                <Box bg="white" boxShadow="base" borderRadius={20} mb={8}>
+                    <IntentEditor/>
+                </Box>
+                <Box bg="white" boxShadow="base" borderRadius={20}>
+                    <IntentList />
+                </Box>
             </GridItem>
-            <GridItem
-                bg="white"
-                boxShadow="base"
-                borderRadius={20}
-                maxW={"full"}
-                colSpan={{ base: 1, lg: 2 }}
-            >
-                <ChartRenderer minH={400} />
-                <CaptionEditor></CaptionEditor>
-            </GridItem>
-            <GridItem bg="white" boxShadow="base" borderRadius={20}>
-                <EntitySelector minH={300} />
+            <GridItem colSpan={{ base: 1, lg: 3 }}>
+                <Box bg="white" boxShadow="base" borderRadius={20}>
+                    <ChartRenderer minH={400} />
+                    <CaptionEditor />
+                </Box>
             </GridItem>
         </Grid>
     </Container>

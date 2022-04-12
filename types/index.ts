@@ -79,13 +79,53 @@ export class Element {
         this.type = type
     }
 
-    get() {
-        return `<selection_item>feature=${this.feature ? this.feature : "none"}, row=${
-            this.row
-        }, column=${this.column}, value=${this.value}</selection_item>`
-    }
 
     setkey(key: string) {
         this.key = key
     }
 }
+
+export interface Target {
+    feature: string
+    row: string
+    column: string | false
+    value: number
+}
+
+export interface Intent {
+    action: "summary" | "identify" | "compare" | "discover"
+    type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate"
+    targets: Target[]
+    period?: "for" | "since" | "before"
+}
+
+// export class Intent {
+//     action: "summary" | "identify" | "compare" | "discover"
+//     type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate"
+//     targets: Element[]
+//     period?: "for" | "since" | "before"
+
+//     constructor(
+//         action: "summary" | "identify" | "compare" | "discover",
+//         type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate",
+//         targets: Element[],
+//         period?: "for" | "since" | "before",
+//     ) {
+//         this.action = action
+//         this.type = type
+//         this.period = period
+//         this.targets = targets
+//     }
+
+//     get(){
+//         const obj : intentObject= {
+//             action: this.action,
+//             type: this.type,
+//             targets: this.targets,
+//         }
+//         if (this.period) {
+//             obj.period = this.period
+//         }
+//         return obj
+//     }
+// }

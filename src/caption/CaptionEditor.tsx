@@ -82,12 +82,9 @@ const CaptionEditor = (props: any) => {
                         Caption
                     </Heading>
                     <Spacer />
-                    <Button
+                    {/* <Button
                         size={"md"}
                         onClick={automatic}
-                        bg={"gray.500"}
-                        color={"white"}
-                        variant="solid"
                         mr={1}
                         isDisabled={userSelection.length ? true : false}
                     >
@@ -96,13 +93,10 @@ const CaptionEditor = (props: any) => {
                     <Button
                         size={"md"}
                         onClick={predict}
-                        bg={"gray.500"}
-                        color={"white"}
-                        variant="solid"
                         ml={1}
                     >
                         Manual Generation
-                    </Button>
+                    </Button> */}
                 </Flex>
                 <Divider />
                 <Box minH={200}>{caption}</Box>

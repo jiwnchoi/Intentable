@@ -130,42 +130,28 @@ const TableConfigureation = () => {
     return (
         <Box p={6}>
             <VStack spacing={4} align="left">
-                <Heading fontSize="xl">Data Configuration</Heading>
+                <Heading fontSize="xl">Table Configuration</Heading>
                 <Divider />
                 <Flex w="full">
                     <Button
                         mr={1}
                         w="full"
-                        bg="gray.500"
-                        color="white"
                         onClick={() => {
-                            handleFetch("get_from_train_set")
+                            handleFetch("get_from_test_set")
                         }}
-                        variant="solid"
-                        shadow={"base"}
                     >
-                        Load Train Set
+                        Load Random Demo
                     </Button>
                     <Spacer />
                     <Button
                         ml={1}
                         w="full"
-                        bg="gray.500"
-                        color="white"
-                        shadow={"base"}
                         onClick={() => handleFetch("get_from_test_set")}
-                        variant="solid"
                     >
-                        Load Test Set
+                        Upload Table
                     </Button>
                 </Flex>
 
-                <Box>
-                    <Text>Import Data</Text>
-                    <Center minH="150px" border="1px" borderColor="gray.200" borderRadius="md">
-                        <Text color="gray.400">Click or Drop .csv File</Text>
-                    </Center>
-                </Box>
                 <FormControl>
                     <FormLabel htmlFor="title">Title</FormLabel>
                     <Textarea
@@ -177,36 +163,36 @@ const TableConfigureation = () => {
                     />
                 </FormControl>
                 <FormControl>
-                    <FormLabel htmlFor="value-Info">Value Information</FormLabel>
-                    <Textarea
-                        id="value-Info"
+                    <FormLabel htmlFor="unit">Unit</FormLabel>
+                    <Input
+                        id="unit"
                         placeholder="e.g. Percentage of people, Value in millions"
                         onChange={(e) => setValueInfo(e.target.value)}
                         value={valueInfo}
                         resize="none"
                     />
                 </FormControl>
-                <FormControl>
-                    <FormLabel htmlFor="chart-type">Chart Type</FormLabel>
-                    <RadioGroup value={chartType} id="chart-type">
-                        <HStack spacing={4}>
-                            <Radio value="bar" onChange={(e) => setChartType("bar")}>
-                                Bar
-                            </Radio>
-                            <Radio value="line" onChange={(e) => setChartType("line")}>
-                                Line
-                            </Radio>
-                            <Radio
-                                value="arc"
-                                onChange={(e) => setChartType("arc")}
-                                disabled={columnNumber < 3 && rowNumber < 11 ? false : true}
-                            >
-                                Pie
-                            </Radio>
-                        </HStack>
-                    </RadioGroup>
-                </FormControl>
-                {chartType == "bar" && columnNumber > 2 ? (
+                <Flex>
+                    <FormControl>
+                        <FormLabel htmlFor="chart-type">Chart Type</FormLabel>
+                        <RadioGroup value={chartType} id="chart-type">
+                            <HStack spacing={4}>
+                                <Radio value="bar" onChange={(e) => setChartType("bar")}>
+                                    Bar
+                                </Radio>
+                                <Radio value="line" onChange={(e) => setChartType("line")}>
+                                    Line
+                                </Radio>
+                                <Radio
+                                    value="arc"
+                                    onChange={(e) => setChartType("arc")}
+                                    disabled={columnNumber < 3 && rowNumber < 11 ? false : true}
+                                >
+                                    Pie
+                                </Radio>
+                            </HStack>
+                        </RadioGroup>
+                    </FormControl>
                     <FormControl>
                         <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
                         <RadioGroup defaultValue={barGrouped ? "grouped" : "stacked"} id="bar-type">
@@ -230,7 +216,7 @@ const TableConfigureation = () => {
                             </HStack>
                         </RadioGroup>
                     </FormControl>
-                ) : null}
+                </Flex>
             </VStack>
         </Box>
     )
