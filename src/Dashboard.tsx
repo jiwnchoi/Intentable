@@ -16,9 +16,9 @@ import {
     VStack,
     Textarea,
 } from "@chakra-ui/react"
-import ChartRenderer from "./chart/ChartRenderer"
-import TableConfigureation from "./table/TableConfigureation"
-import CaptionEditor from "./caption/CaptionEditor"
+import ChartRenderer from "./visualization"
+import TableConfigureation from "./tableConfig"
+import CaptionEditor from "./captionViewer"
 import IntentList from "./inetntList"
 import IntentEditor from "./intentEditor"
 

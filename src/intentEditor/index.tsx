@@ -192,15 +192,15 @@ const intentEditor = () => {
                 ) : null}
                 {chooseElements === 0 ? null : chooseElements === 1 ? (
                     <Alert status={"warning"}>
-                        <AlertIcon /> Click a target visual mark to append!
+                        <AlertIcon /> Click a target visual mark to append.
                     </Alert>
                 ) : chooseElements === 2 ? (
                     <Alert status={"warning"}>
-                        <AlertIcon /> Click two target visual marks to append!
+                        <AlertIcon /> Click two target visual marks to append.
                     </Alert>
                 ) : chooseElements === 3 ? (
                     <Alert status={"info"}>
-                        <AlertIcon /> Click visual marks up to two (0 ~ 2) and click me!
+                        <AlertIcon /> Click visual marks up to two. (0 ~ 2)
                     </Alert>
                 ) : null}
             </VStack>
