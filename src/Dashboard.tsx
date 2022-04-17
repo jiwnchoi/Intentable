@@ -16,9 +16,9 @@ import {
     VStack,
     Textarea,
 } from "@chakra-ui/react"
-import ChartRenderer from "./visualization"
+import ChartRenderer from "./chartViewer"
 import TableConfigureation from "./tableConfig"
-import CaptionEditor from "./captionViewer"
+import CaptionViewer from "./captionViewer"
 import IntentList from "./inetntList"
 import IntentEditor from "./intentEditor"
 
@@ -29,17 +29,19 @@ const Dashboard = () => (
                 <Box bg="white" boxShadow="base" borderRadius={20} mb={8}>
                     <TableConfigureation />
                 </Box>
-                <Box bg="white" boxShadow="base" borderRadius={20} mb={8}>
-                    <IntentEditor/>
+                <Box overflow={"hidden"} bg="white" boxShadow="base" borderRadius={20} mb={8}>
+                    <IntentEditor />
                 </Box>
                 <Box bg="white" boxShadow="base" borderRadius={20}>
                     <IntentList />
                 </Box>
             </GridItem>
             <GridItem colSpan={{ base: 1, lg: 3 }}>
-                <Box bg="white" boxShadow="base" borderRadius={20}>
+                <Box bg="white" boxShadow="base" borderRadius={20} mb={8}>
                     <ChartRenderer minH={400} />
-                    <CaptionEditor />
+                </Box>
+                <Box bg="white" boxShadow="base" borderRadius={20}>
+                    <CaptionViewer />
                 </Box>
             </GridItem>
         </Grid>

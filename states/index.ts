@@ -1,5 +1,13 @@
 import { atom } from "recoil"
-import { Mark, Element, tableDataType, columnFeature } from "../types"
+import {
+    Mark,
+    Intent,
+    SelectedTarget,
+    SelectedIntent,
+    chartType,
+    Features,
+    TargetTable,
+} from "../types"
 
 export const tableTitleState = atom({
     key: "tableTitle",
@@ -11,14 +19,9 @@ export const tableValueInfoState = atom({
     default: "",
 })
 
-export const chartTypeState = atom<Mark>({
+export const chartTypeState = atom<chartType>({
     key: "chartType",
     default: "bar",
-})
-
-export const tableDataState = atom<tableDataType[]>({
-    key: "tableData",
-    default: [],
 })
 
 export const rowTypeState = atom({
@@ -26,19 +29,9 @@ export const rowTypeState = atom({
     default: "",
 })
 
-export const selectedElementState = atom({
-    key: "selectedElement",
-    default: [],
-})
-
 export const barGroupedState = atom({
     key: "barGrouped",
-    default: true,
-})
-
-export const userSelectionState = atom<Element[]>({
-    key: "userSelection",
-    default: [],
+    default: false,
 })
 
 export const captionState = atom({
@@ -46,12 +39,33 @@ export const captionState = atom({
     default: "",
 })
 
-export const featureTableState = atom<{ [colname: string]: columnFeature }>({
-    key: "featureTable",
-    default: {},
+export const selectedIntentsState = atom<SelectedIntent[]>({
+    key: "selectedIntents",
+    default: [],
 })
 
-export const hasOverviewState = atom({
-    key: "hasOverview",
-    default: true,
+export const selectedTargetsState = atom<SelectedTarget[]>({
+    key: "selectedTargets",
+    default: [],
+})
+
+export const chooseTargetState = atom<number>({
+    key: "chooseTarget",
+    default: 0,
+})
+
+export const goldenCaptionState = atom({
+    key: "goldenCaption",
+    default: "",
+})
+
+export const goldenRecipeState = atom<any>({
+    key: "goldenRecipe",
+    default: {
+    }
+})
+
+export const targetTableState = atom<TargetTable>({
+    key: "targetTable",
+    default: { value: [] },
 })

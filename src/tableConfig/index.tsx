@@ -1,130 +1,114 @@
 import {
     Box,
-    Text,
-    Container,
+    Button,
     Divider,
+    Flex,
     FormControl,
     FormLabel,
-    Grid,
-    GridItem,
     Heading,
     HStack,
     Input,
     Radio,
     RadioGroup,
-    VStack,
-    Center,
-    Button,
-    Textarea,
-    Flex,
     Spacer,
+    Textarea,
+    VStack,
 } from "@chakra-ui/react"
 import axios from "axios"
-import { gray } from "d3-color"
-
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRecoilState } from "recoil"
 import {
+    chartTypeState,
+    goldenCaptionState,
+    rowTypeState,
+    selectedIntentsState,
     tableTitleState,
     tableValueInfoState,
-    tableDataState,
-    chartTypeState,
-    rowTypeState,
-    barGroupedState,
-    featureTableState,
-    userSelectionState,
+    targetTableState,
+    goldenRecipeState
 } from "../../states"
-import { fetchDemo, columnFeature, Element, featureTableType } from "../../types"
+import { Features, FetchDemo, SelectedTarget, TargetTable } from "../../types"
 
 const TableConfigureation = () => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState)
     const [valueInfo, setValueInfo] = useRecoilState(tableValueInfoState)
-    const [tableData, setTableData] = useRecoilState(tableDataState)
     const [chartType, setChartType] = useRecoilState(chartTypeState)
     const [rowType, setRowType] = useRecoilState(rowTypeState)
-    const [barGrouped, setBarGrouped] = useRecoilState(barGroupedState)
-    const [featureTable, setFeatureTable] = useRecoilState(featureTableState)
-    const [userSelection, setUserSelection] = useRecoilState(userSelectionState)
+    const [selectedIntents, setSelectedIntents] = useRecoilState(selectedIntentsState)
+    const [goldenCaption, setGoldenCaption] = useRecoilState(goldenCaptionState)
+    const [targetTable, setTargetTable] = useRecoilState(targetTableState)
+    const [goldenRecipe, setGoldenRecipe] = useRecoilState(goldenRecipeState)
     const [columnNumber, setColumnNumber] = useState(0)
     const [rowNumber, setRowNumber] = useState(0)
 
-    useEffect(() => {
-        setFeatureTable({})
-        setUserSelection([])
-    }, [tableData])
-
     async function handleFetch(link: string) {
         const get = await axios.get(`http://localhost:5600/${link}`)
-        const data: fetchDemo = get.data
-        const columnNames: string[] = Object.keys(data.table[0]).filter(
-            (d) => d !== "characteristic"
-        )
+        const data: FetchDemo = get.data
+        const columnNames: string[] = Object.keys(data.table[0])
+            .filter((d) => d !== "characteristic")
+            .map((d) => String(d))
+        setGoldenRecipe(data.recipe)
         setRowNumber(data.table.length)
         setColumnNumber(columnNames.length)
-        setTableData(data.table)
-        console.log(data.table)
-        if (data.chart_type == "bar") {
-            setChartType("bar")
-        } else if (data.chart_type.includes("line")) {
-            setChartType("line")
-        } else if (data.chart_type.includes("pie")) {
-            setChartType("arc")
-        }
-        setTableTitle(data.title)
-        setValueInfo(data.value_info)
+        setChartType(data.recipe.chart_type)
+        setGoldenCaption(data.caption)
+        setTableTitle(data.recipe.title)
+        setValueInfo(data.recipe.unit)
         setRowType(data.row_type)
+        setSelectedIntents([])
 
-        const tmpFeatureTable: featureTableType = {}
+        const targetTable: TargetTable = {}
 
+        const featureTable: { [series: string]: Features } = {}
         for (const columnName of columnNames) {
-            const characteristics = data.table.map((d) => d.characteristic)
+            // Calculating Column-wise Feature
             const values = data.table.map((d) => d[columnName])
 
             const max = values.reduce((a, b) => {
-                return a > b ? a : b
+                return a > b ? a : (b as number)
             })
             const min = values.reduce((a, b) => {
-                return a < b ? a : b
+                return a < b ? a : (b as number)
             })
-
-            let maxminFeature = {
-                max: new Element(
-                    "max",
-                    max as number,
-                    characteristics[values.indexOf(max)] as string,
-                    columnName,
-                    "element"
-                ),
-                min: new Element(
-                    "min",
-                    min as number,
-                    characteristics[values.indexOf(min)] as string,
-                    columnName,
-                    "element"
-                ),
+            featureTable[columnName] = {
+                max: max as number,
+                min: min as number,
+                recent: String(data.table[data.table.length - 1].characteristic),
+                past: String(data.table[0].characteristic),
             }
-            let dateFeature = {}
-            if (data.row_type === "DATE") {
-                dateFeature = {
-                    past: new Element(
-                        "past",
-                        values[0] as number,
-                        characteristics[0] as string,
-                        columnName,
-                        "element"
-                    ),
-                    recent: new Element(
-                        "recent",
-                        values[values.length - 1] as number,
-                        characteristics[values.length - 1] as string,
-                        columnName,
-                        "element"
-                    ),
+            // Converting to Selected Target
+            for (const row of data.table) {
+                const value = row[columnName] as number
+                const series = columnName
+                const key = String(row["characteristic"])
+
+                const target = new SelectedTarget(value, key, series)
+
+                if (featureTable[series].max == value) {
+                    if (!target.feature) target.feature = ["max"]
+                    else target.feature.push("max")
+                }
+                if (featureTable[series].min == value) {
+                    if (!target.feature) target.feature = ["min"]
+                    else target.feature.push("min")
+                }
+                if (rowType == "DATE" && featureTable[series].recent == key) {
+                    if (!target.feature) target.feature = ["recent"]
+                    else target.feature.push("recent")
+                }
+                if (rowType == "DATE" && featureTable[series].past == key) {
+                    if (!target.feature) target.feature = ["past"]
+                    else target.feature.push("past")
+                }
+
+                if (targetTable[series] === undefined) {
+                    targetTable[series] = [target]
+                } else {
+                    targetTable[series].push(target)
                 }
             }
-            tmpFeatureTable[columnName] = { ...maxminFeature, ...dateFeature }
         }
-        setFeatureTable(tmpFeatureTable)
+        setTargetTable(targetTable)
     }
 
     return (
@@ -171,47 +155,68 @@ const TableConfigureation = () => {
                 <Flex>
                     <FormControl>
                         <FormLabel htmlFor="chart-type">Chart Type</FormLabel>
-                        <RadioGroup value={chartType} id="chart-type">
+                        <RadioGroup
+                            value={chartType
+                                .replace("multi_", "")
+                                .replace("grouped_", "")
+                                .replace("stacked_", "")}
+                            id="chart-type"
+                        >
                             <HStack spacing={4}>
-                                <Radio value="bar" onChange={(e) => setChartType("bar")}>
+                                <Radio
+                                    value="bar"
+                                    onChange={(e) =>
+                                        setChartType(columnNumber === 1 ? "bar" : "grouped_bar")
+                                    }
+                                >
                                     Bar
                                 </Radio>
-                                <Radio value="line" onChange={(e) => setChartType("line")}>
+                                <Radio
+                                    value="line"
+                                    onChange={(e) =>
+                                        setChartType(columnNumber === 1 ? "line" : "multi_line")
+                                    }
+                                >
                                     Line
                                 </Radio>
                                 <Radio
-                                    value="arc"
-                                    onChange={(e) => setChartType("arc")}
-                                    disabled={columnNumber < 3 && rowNumber < 11 ? false : true}
+                                    value="pie"
+                                    onChange={(e) => setChartType("pie")}
+                                    disabled={columnNumber === 1 && rowNumber < 11 ? false : true}
                                 >
                                     Pie
                                 </Radio>
                             </HStack>
                         </RadioGroup>
                     </FormControl>
-                    <FormControl>
-                        <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
-                        <RadioGroup defaultValue={barGrouped ? "grouped" : "stacked"} id="bar-type">
-                            <HStack spacing={4}>
-                                <Radio
-                                    value="grouped"
-                                    onChange={(e) => {
-                                        setBarGrouped(true)
-                                    }}
-                                >
-                                    Grouped
-                                </Radio>
-                                <Radio
-                                    value="stacked"
-                                    onChange={(e) => {
-                                        setBarGrouped(false)
-                                    }}
-                                >
-                                    Stacked
-                                </Radio>
-                            </HStack>
-                        </RadioGroup>
-                    </FormControl>
+                    {["grouped_bar", "stacked_bar"].includes(chartType) ? (
+                        <FormControl>
+                            <FormLabel htmlFor="bar-type">Bar Type</FormLabel>
+                            <RadioGroup
+                                defaultValue={chartType.includes("grouped") ? "grouped" : "stacked"}
+                                id="bar-type"
+                            >
+                                <HStack spacing={4}>
+                                    <Radio
+                                        value="grouped"
+                                        onChange={(e) => {
+                                            setChartType("grouped_bar")
+                                        }}
+                                    >
+                                        Grouped
+                                    </Radio>
+                                    <Radio
+                                        value="stacked"
+                                        onChange={(e) => {
+                                            setChartType("stacked_bar")
+                                        }}
+                                    >
+                                        Stacked
+                                    </Radio>
+                                </HStack>
+                            </RadioGroup>
+                        </FormControl>
+                    ) : null}
                 </Flex>
             </VStack>
         </Box>

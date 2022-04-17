@@ -5,6 +5,7 @@ export type Size = {
     width: number
     height: number
 }
+
 export type ChartProps = {
     xScale: ScaleBand<string>
     yScale: ScaleLinear<number, number, never>
@@ -13,119 +14,148 @@ export type ChartProps = {
     margins: { top: number; right: number; bottom: number; left: number }
 }
 
-export type tableDataType = {
-    [key: string]: number | string
+export type FetchTableType = {
+    [series: string]: number | string
 }
 
-export type fetchDemo = {
-    title: string
-    value_info: string
-    chart_type: string
+export type FetchDemo = {
+    recipe: Recipe
     row_type: string
-    table: tableDataType[]
-}
-
-export type Selection = {
-    key: string
-    columnNumber: number
-    rowNumber: number
-    columnName: string
-    feature?: string
-    value: number
-    characteristic: string
-    type: "entity" | "name" | "both" | "none"
-}
-
-export type SingleColumnData = {
-    characteristic: string
-    value: number
-}
-
-export type MultiColumnData = {
-    [key: string]: number | string
-}
-
-export type columnFeature = {
-    max: Element
-    min: Element
-    recent?: Element
-    past?: Element
-}
-
-export type featureTableType = {
-    [colname: string]: columnFeature
-}
-
-export class Element {
-    key: string
-    feature: string | undefined
-    value: number
-    row: string
-    column: string
-    type: "overall" | "element"
-
-    constructor(
-        feature: string | undefined,
-        value: number,
-        row: string,
-        column: string,
-        type: "overall" | "element"
-    ) {
-        this.key = `${column}-${row}-${value}`
-        this.feature = feature
-        this.value = value
-        this.row = row
-        this.column = column
-        this.type = type
-    }
-
-
-    setkey(key: string) {
-        this.key = key
-    }
+    table: FetchTableType[]
+    caption: string
 }
 
 export interface Target {
-    feature: string
-    row: string
-    column: string | false
     value: number
+    key: string
+    series?: string
+    feature?: string[]
 }
+
+export interface TargetTable {
+    [series: string]: SelectedTarget[]
+}
+
+export interface Features {
+    max: number
+    min: number
+    recent: string
+    past: string
+}
+export type actionType = "overview" | "describe" | "compare" | "trend" | "none"
+export type relationType = "equal" | "less" | "greater"
+export type chartType = "bar" | "grouped_bar" | "stacked_bar" | "line" | "multi_line" | "pie"
+
+export type MarkType = "bar" | "arc" | "line"
 
 export interface Intent {
-    action: "summary" | "identify" | "compare" | "discover"
-    type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate"
-    targets: Target[]
-    period?: "for" | "since" | "before"
+    action: actionType
+    relation?: relationType
+    relations?: relationType[]
+    targets?: Target[]
 }
 
-// export class Intent {
-//     action: "summary" | "identify" | "compare" | "discover"
-//     type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate"
-//     targets: Element[]
-//     period?: "for" | "since" | "before"
+export interface Recipe {
+    chart_type: chartType
+    title: string
+    unit: string
+    intents: Intent[]
+}
 
-//     constructor(
-//         action: "summary" | "identify" | "compare" | "discover",
-//         type: "describe" | "question" | "one" | "two" | "greater" | "less" | "fluctuate",
-//         targets: Element[],
-//         period?: "for" | "since" | "before",
-//     ) {
-//         this.action = action
-//         this.type = type
-//         this.period = period
-//         this.targets = targets
-//     }
+export class SelectedIntent implements Intent {
+    id: number
+    action: actionType
+    relation?: relationType
+    relations?: relationType[]
+    targets?: SelectedTarget[]
 
-//     get(){
-//         const obj : intentObject= {
-//             action: this.action,
-//             type: this.type,
-//             targets: this.targets,
-//         }
-//         if (this.period) {
-//             obj.period = this.period
-//         }
-//         return obj
-//     }
-// }
+    constructor(
+        action: actionType,
+        relation?: relationType,
+        relations?: relationType[],
+        targets?: SelectedTarget[]
+    ) {
+        this.id = Math.random()
+        this.action = action
+        if (targets) this.targets = targets
+        if (relation) this.relation = relation
+        if (relations) this.relations = relations
+    }
+
+    get() {
+        if (
+            this.action === "overview" &&
+            this.relation === undefined &&
+            this.relations === undefined &&
+            this.targets === undefined
+        ) {
+            return {
+                action: this.action,
+            }
+        } else if (
+            this.action === "describe" &&
+            this.relation === undefined &&
+            this.relations === undefined &&
+            this.targets &&
+            this.targets.length > 0
+        ) {
+            return {
+                action: this.action,
+                targets: this.targets.map((target) => target.get()),
+            }
+        } else if (
+            this.action === "compare" &&
+            this.relation !== undefined &&
+            this.relations === undefined &&
+            this.targets &&
+            this.targets.length === 2
+        ) {
+            return {
+                action: this.action,
+                relation: this.relation,
+                targets: this.targets.map((target) => target.get()),
+            }
+        } else if (
+            this.action === "trend" &&
+            this.relations &&
+            this.relations.length > 0 &&
+            this.targets &&
+            this.targets.length > 2
+        ) {
+            return {
+                action: this.action,
+                relations: this.relations,
+                targets: this.targets.map((target) => target.get()),
+            }
+        }
+    }
+}
+
+export class SelectedTarget implements Target {
+    id: string
+    value: number
+    key: string
+    series?: string
+    feature?: string[]
+    constructor(value: number, key: string, series?: string, feature?: string[]) {
+        this.id = `${series}-${key}-${value}`
+        this.value = value
+        this.key = key
+        this.series = series
+        this.feature = feature
+    }
+
+    get() {
+        const target: Target = {
+            value: this.value,
+            key: this.key,
+        }
+        if (this.series !== "value") {
+            target.series = this.series
+        }
+        if (this.feature && this.feature.length > 0) {
+            target.feature = this.feature
+        }
+        return target
+    }
+}

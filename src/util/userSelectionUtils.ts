@@ -1,41 +1,49 @@
-import { Element, featureTableType } from "../../types"
-const checkUserSelection = (
-    userSelection: Element[],
-    key: string,
-    characteristic: string,
-    value: number
-) => {
-    return userSelection.some((d) => d.key === `${key}-${characteristic}-${value}`)
+import { SelectedTarget,  Target } from "../../types"
+const checkUserSelection = (userSelection: SelectedTarget[], clicked: SelectedTarget) => {
+    return userSelection.some((d) => d.id === clicked.id)
 }
 
 const modifyUserSelection = (
-    userSelection: Element[],
-    featureTable: featureTableType,
-    key: string,
-    characteristic: string,
-    value: number
+    userSelection: SelectedTarget[],
+    clicked: SelectedTarget,
+    chooseTarget: number
 ) => {
-    const columnFeature = featureTable[key]
-    if (userSelection.some((d) => d.key === `${key}-${characteristic}-${value}`)) {
-        userSelection = userSelection.filter((d) => d.key !== `${key}-${characteristic}-${value}`)
-    } else {
-        const featureElement = Object.values(columnFeature).find(
-            (d) => d.column === key && d.row === characteristic && d.value === value
-        )
-        if (featureElement) {
-            userSelection =  [...userSelection, featureElement]
-        } else {
-            const selectedElement = new Element(
-                undefined,
-                value,
-                characteristic,
-                key,
-                "element"
-            )
-            userSelection = [...userSelection, selectedElement]
+    if (!isMarkDeletable(chooseTarget, userSelection)) {
+        return userSelection
+    }
+    if (isMarkAppendable(chooseTarget, userSelection)) {
+        if (checkUserSelection(userSelection, clicked)) {
+            return userSelection.filter((d) => d.id !== clicked.id)
+        }
+        else{
+            return [...userSelection, clicked]
         }
     }
     return userSelection
+}
+
+const isMarkAppendable = (chooseTarget: number, userSelection: SelectedTarget[]) => {
+    if (chooseTarget === 0) {
+        return false
+    } else if (chooseTarget === 1) {
+        return userSelection.length < 1
+    } else if (chooseTarget === 2) {
+        return userSelection.length < 2
+    } else {
+        return userSelection.length < 10
+    }
+}
+
+const isMarkDeletable = (chooseTarget: number, userSelection: SelectedTarget[]) => {
+    if (chooseTarget === 0) {
+        return false
+    } else if (chooseTarget === 1) {
+        return userSelection.length <= 1
+    } else if (chooseTarget === 2) {
+        return userSelection.length <= 2
+    } else {
+        return true
+    }
 }
 
 export { checkUserSelection, modifyUserSelection }
