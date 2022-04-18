@@ -1,5 +1,4 @@
 import type { ScaleBand, ScaleLinear } from "d3-scale"
-export type Mark = "bar" | "arc" | "line"
 
 export type Size = {
     width: number
@@ -42,21 +41,19 @@ export interface Features {
     recent: string
     past: string
 }
-export type actionType = "overview" | "describe" | "compare" | "trend" | "none"
-export type relationType = "equal" | "less" | "greater"
-export type chartType = "bar" | "grouped_bar" | "stacked_bar" | "line" | "multi_line" | "pie"
-
+export type ActionType = "overview" | "describe" | "compare" | "trend" | "none"
+export type FeatureType = "max" | "min" | "recent" | "past"
+export type ChartType = "bar" | "grouped_bar" | "stacked_bar" | "line" | "multi_line" | "pie"
 export type MarkType = "bar" | "arc" | "line"
 
 export interface Intent {
-    action: actionType
-    relation?: relationType
-    relations?: relationType[]
+    action: ActionType
     targets?: Target[]
+    diff?: string[]
 }
 
 export interface Recipe {
-    chart_type: chartType
+    chart_type: ChartType
     title: string
     unit: string
     intents: Intent[]
@@ -64,38 +61,25 @@ export interface Recipe {
 
 export class SelectedIntent implements Intent {
     id: number
-    action: actionType
-    relation?: relationType
-    relations?: relationType[]
+    action: ActionType
     targets?: SelectedTarget[]
+    diff?: string[]
 
-    constructor(
-        action: actionType,
-        relation?: relationType,
-        relations?: relationType[],
-        targets?: SelectedTarget[]
-    ) {
+    constructor(action: ActionType, targets?: SelectedTarget[], diff?: string[]) {
         this.id = Math.random()
         this.action = action
         if (targets) this.targets = targets
-        if (relation) this.relation = relation
-        if (relations) this.relations = relations
+        if (diff) this.diff = diff
     }
 
     get() {
-        if (
-            this.action === "overview" &&
-            this.relation === undefined &&
-            this.relations === undefined &&
-            this.targets === undefined
-        ) {
+        if (this.action === "overview" && this.diff === undefined && this.targets === undefined) {
             return {
                 action: this.action,
             }
         } else if (
             this.action === "describe" &&
-            this.relation === undefined &&
-            this.relations === undefined &&
+            this.diff === undefined &&
             this.targets &&
             this.targets.length > 0
         ) {
@@ -105,27 +89,26 @@ export class SelectedIntent implements Intent {
             }
         } else if (
             this.action === "compare" &&
-            this.relation !== undefined &&
-            this.relations === undefined &&
+            this.diff &&
+            this.diff.length === 1 &&
             this.targets &&
             this.targets.length === 2
         ) {
             return {
                 action: this.action,
-                relation: this.relation,
                 targets: this.targets.map((target) => target.get()),
+                diff: this.diff,
             }
         } else if (
             this.action === "trend" &&
-            this.relations &&
-            this.relations.length > 0 &&
             this.targets &&
-            this.targets.length > 2
+            this.targets.length === 2 &&
+            this.diff
         ) {
             return {
                 action: this.action,
-                relations: this.relations,
                 targets: this.targets.map((target) => target.get()),
+                diff: this.diff,
             }
         }
     }
@@ -136,8 +119,8 @@ export class SelectedTarget implements Target {
     value: number
     key: string
     series?: string
-    feature?: string[]
-    constructor(value: number, key: string, series?: string, feature?: string[]) {
+    feature?: FeatureType[]
+    constructor(value: number, key: string, series?: string, feature?: FeatureType[]) {
         this.id = `${series}-${key}-${value}`
         this.value = value
         this.key = key

@@ -1,13 +1,5 @@
 import { atom } from "recoil"
-import {
-    Mark,
-    Intent,
-    SelectedTarget,
-    SelectedIntent,
-    chartType,
-    Features,
-    TargetTable,
-} from "../types"
+import { chartType, SelectedIntent, SelectedTarget, TargetTable } from "../types"
 
 export const tableTitleState = atom({
     key: "tableTitle",
@@ -61,8 +53,7 @@ export const goldenCaptionState = atom({
 
 export const goldenRecipeState = atom<any>({
     key: "goldenRecipe",
-    default: {
-    }
+    default: {},
 })
 
 export const targetTableState = atom<TargetTable>({

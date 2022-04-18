@@ -19,7 +19,7 @@ const ChartRenderer = ({ minH }: any) => {
                 <Center>
                     <Heading fontSize={"xl"}>{tableTitle}</Heading>
                 </Center>
-                {tableData ? (
+                {!(tableData.value && tableData.value.length === 0) ? (
                     <ParentSize>
                         {({ width, height }) => <Chart width={width} height={chartHeight} />}
                     </ParentSize>

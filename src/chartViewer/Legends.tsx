@@ -14,6 +14,7 @@ export default function Legends({
         domain: keys,
         range: [...color],
     })
+    console.log(keys)
 
     return (
         <LegendOrdinal scale={ordinalColorScale}>
@@ -42,9 +43,19 @@ export default function Legends({
                             </LegendItem>
                         ))}
                     </Flex> */}
-                    <Grid w="full" templateColumns={`repeat(${legend.length > 2 ? 6 : legend.length * 2}, 1fr)`}>
+                    <Grid
+                        w="full"
+                        bg={"gray.100"}
+                        p={4}
+                        mt={4}
+                        borderRadius={8}
+                        templateColumns={`repeat(${
+                            legend.length > 2 ? 6 : legend.length * 2
+                        }, 1fr)`}
+                    >
                         {legend.map((entry, i) => (
-                            <GridItem colSpan={2} >
+                            <GridItem colSpan={2}>
+                                <Center>
                                     <LegendItem key={i}>
                                         <svg width={legendGlyphSize} height={legendGlyphSize}>
                                             <circle
@@ -58,6 +69,7 @@ export default function Legends({
                                             {entry.text}
                                         </LegendLabel>
                                     </LegendItem>
+                                </Center>
                             </GridItem>
                         ))}
                     </Grid>

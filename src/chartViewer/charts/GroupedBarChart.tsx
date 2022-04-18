@@ -42,13 +42,10 @@ export default function GroupedBarChart({ xScale, yScale, xMax, yMax, margins }:
             >
                 {(barGroups) =>
                     barGroups.map((barGroup, i) => {
-                        console.log(targetTable)
                         return (
-                            <Group key={`bar-group-${barGroup.index}`} left={barGroup.x0}>
+                            <Group key={`bar-group-${Math.random()}`} left={barGroup.x0}>
                                 {barGroup.bars.map((bar) => {
                                     const d = targetTable[bar.key][i] as SelectedTarget
-                                    
-                                    console.log(d, bar)
                                     return (
                                         <Bar
                                             key={`bar-group-bar-${i}`}

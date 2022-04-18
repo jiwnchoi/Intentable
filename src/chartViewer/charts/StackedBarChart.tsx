@@ -39,10 +39,9 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax, margins }: 
                 barStacks.map((barStack) =>
                     barStack.bars.map((bar, i) => {
                         const d = targetTable[bar.key][i] as SelectedTarget
-                        console.log(d)
                         return (
                             <Bar
-                                key={`bar-stack-${d.id}`}
+                                key={`bar-stack-${Math.random()}`}
                                 x={bar.x}
                                 y={bar.y + margins.top}
                                 width={bar.width}

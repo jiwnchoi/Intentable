@@ -63,7 +63,6 @@ export default function Charts({ width, height }: Size) {
             }),
         [xMax, keyList]
     )
-    console.log(chartType, cardinality)
 
     const getYScaleDomain = () => {
         if (chartType === "stacked_bar") {
@@ -165,7 +164,7 @@ export default function Charts({ width, height }: Size) {
             {chartType === "pie" ? (
                 <Legends keys={keyList.map(getFirstCaptital)} legendGlyphSize={14} />
             ) : null}
-            {cardinality > 2 ? (
+            {cardinality > 1 ? (
                 <Legends keys={seriesList.map(getFirstCaptital)} legendGlyphSize={14} />
             ) : null}
         </>

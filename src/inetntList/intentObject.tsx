@@ -1,22 +1,18 @@
 import {
     Box,
-    Flex,
-    Heading,
+    Flex, Grid,
+    GridItem, Heading,
     Spacer,
     Text,
-    VStack,
-    Center,
-    HStack,
-    Grid,
-    GridItem,
+    VStack
 } from "@chakra-ui/react"
+import { useMemo, useState } from "react"
+import { useRecoilState } from "recoil"
+import { chartTypeState, selectedIntentsState, targetTableState } from "../../states"
 import { SelectedIntent, SelectedTarget } from "../../types"
 import { ActionIcon } from "../util/ActionIcon"
-import { selectedIntentsState, chartTypeState, targetTableState } from "../../states"
-import { useRecoilState } from "recoil"
-import { getFirstCaptital } from "../util/labelUtils"
-import { useMemo, useState } from "react"
 import { getColorScheme } from "../util/colorSchemeUtils"
+import { getFirstCaptital } from "../util/labelUtils"
 
 const IntentObject = ({
     intent,
@@ -33,7 +29,8 @@ const IntentObject = ({
     const renderTargets = targets
         ? targets
         : intent.targets
-        ? intent.targets
+        ? intent.action === 'trend' ? [intent.targets[0], intent.targets[intent.targets.length -1]] :
+            intent.targets
         : []
 
     const removeIntent = (intent: SelectedIntent) => {
@@ -74,7 +71,7 @@ const IntentObject = ({
                     {getFirstCaptital(intent.action)}
                 </Text>
                 <Spacer />
-                <Grid h="full" w={350} gap={1} templateColumns="repeat(2, 1fr)">
+                <Grid h="full" w={345} gap={1} templateColumns="repeat(2, 1fr)">
                     {renderTargets.map((target: SelectedTarget, i: number) => (
                         <GridItem
                             w={"full"}

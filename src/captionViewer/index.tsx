@@ -23,7 +23,7 @@ import {
     targetTableState,
     goldenRecipeState,
 } from "../../states"
-import { chartType, Intent, Recipe } from "../../types"
+import { ChartType, Intent, Recipe } from "../../types"
 
 const CaptionEditor = (props: any) => {
     const [chartType, setChartType] = useRecoilState(chartTypeState)
@@ -39,9 +39,9 @@ const CaptionEditor = (props: any) => {
     const [sourceSequence, setSourceSequence] = useState("")
     const [showDetail, setShowDetail] = useState(false)
     const predict = async () => {
-        const get = await axios.get(
-            "http://localhost:5600/predict?caption=" + JSON.stringify(recipe)
-        )
+        const get = await axios.post("http://localhost:5600/predict", {
+            recipe: JSON.stringify(recipe),
+        })
         let predicted_caption = get.data.predict
         setCaption(predicted_caption)
     }
@@ -52,11 +52,12 @@ const CaptionEditor = (props: any) => {
 
     useEffect(() => {
         const tmp: Recipe = {
-            chart_type: chartType.replace("arc", "pie") as chartType,
+            chart_type: chartType.replace("arc", "pie") as ChartType,
             title: tableTitle,
             unit: valueInfo,
             intents: selectedIntents.map((intent) => intent.get() as Intent),
         }
+
         setRecipe(tmp)
     }, [chartType, tableTitle, valueInfo, targetTable, selectedIntents])
 
@@ -72,6 +73,8 @@ const CaptionEditor = (props: any) => {
                         {showDetail ? "Hide Details" : "Show Details"}
                     </Button>
                     <Button
+                        bg="gray.500"
+                        color="white"
                         size={"sm"}
                         onClick={predict}
                         disabled={selectedIntents.length === 0 ? true : false}
@@ -90,7 +93,7 @@ const CaptionEditor = (props: any) => {
                             </>
                         ) : null}
 
-                        {caption ? caption : "No caption generated yet"}
+                        {caption ? caption : `Select intent and press "Genretate Captions" button!`}
                     </GridItem>
                     {showDetail ? (
                         <>
@@ -101,7 +104,7 @@ const CaptionEditor = (props: any) => {
                                 <Textarea
                                     minH={300}
                                     resize={"none"}
-                                    defaultValue={
+                                    value={
                                         recipe ? JSON.stringify(recipe, undefined, 2) : "No recipe"
                                     }
                                     readOnly={true}
@@ -120,7 +123,7 @@ const CaptionEditor = (props: any) => {
                                 <Textarea
                                     minH={300}
                                     resize={"none"}
-                                    defaultValue={
+                                    value={
                                         goldenRecipe
                                             ? JSON.stringify(goldenRecipe, undefined, 2)
                                             : "No recipe"

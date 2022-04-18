@@ -12,8 +12,9 @@ import {
     selectedTargetsState,
     targetTableState,
 } from "../../states"
-import { actionType, relationType, SelectedIntent } from "../../types"
+import { ActionType, SelectedIntent } from "../../types"
 import IntentObject from "../inetntList/intentObject"
+import { formatDiff } from "../util/formatDiff"
 
 const intentEditor = () => {
     const [actionClicked, setActionClicked] = useState("none")
@@ -35,17 +36,14 @@ const intentEditor = () => {
         } else if (actionClicked === "describe") {
             setIntents([
                 ...intents,
-                new SelectedIntent("describe", undefined, undefined, [...selectedTargets]),
+                new SelectedIntent("describe", [...selectedTargets], undefined),
             ])
         } else if (actionClicked === "compare") {
+            const diff = selectedTargets[1].value - selectedTargets[0].value
+            const formattedDiff = formatDiff(diff)
             setIntents([
                 ...intents,
-                new SelectedIntent(
-                    "compare",
-                    selectedTargets[0].value > selectedTargets[1].value ? "less" : "greater",
-                    undefined,
-                    [...selectedTargets]
-                ),
+                new SelectedIntent("compare", [...selectedTargets], [formattedDiff]),
             ])
         } else if (actionClicked === "trend") {
             const series =
@@ -58,19 +56,18 @@ const intentEditor = () => {
             const start = Math.min(indexKey1, indexKey2)
             const end = Math.max(indexKey1, indexKey2)
             const trendTargets = seriesTargets.slice(start, end + 1)
-            const trendRelations: relationType[] = []
+            const trendDiffs: string[] = []
             for (let i = 0; i < trendTargets.length - 1; i++) {
-                if (trendTargets[i].value > trendTargets[i + 1].value) {
-                    trendRelations.push("less")
-                } else if (trendTargets[i].value < trendTargets[i + 1].value) {
-                    trendRelations.push("greater")
-                } else {
-                    trendRelations.push("equal")
-                }
+                const diff = trendTargets[i + 1].value - trendTargets[i].value
+                trendDiffs.push(formatDiff(diff))
             }
             setIntents([
                 ...intents,
-                new SelectedIntent("trend", undefined, trendRelations, trendTargets),
+                new SelectedIntent(
+                    "trend",
+                    [trendTargets[0], trendTargets[trendTargets.length - 1]],
+                    trendDiffs
+                ),
             ])
         }
         resetClicked()
@@ -171,7 +168,7 @@ const intentEditor = () => {
                 <Divider />
                 {actionClicked !== "none" ? (
                     <IntentObject
-                        intent={new SelectedIntent(actionClicked as actionType)}
+                        intent={new SelectedIntent(actionClicked as ActionType)}
                         targets={selectedTargets}
                     />
                 ) : null}
@@ -193,10 +190,11 @@ const intentEditor = () => {
                         w="full"
                         size={"md"}
                         onClick={appendHandler}
-                        colorScheme="blue"
+                        bg="gray.500"
+                        color="white"
                         disabled={isIntentAppendable()}
                     >
-                        Append Indent
+                        Append Intent
                     </Button>
                 ) : null}
             </VStack>

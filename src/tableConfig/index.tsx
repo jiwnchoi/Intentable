@@ -127,7 +127,7 @@ const TableConfigureation = () => {
                         Load Random Demo
                     </Button>
                     <Spacer />
-                    <Button ml={1} w="full" onClick={() => handleFetch("get_from_test_set")}>
+                    <Button ml={1} w="full" disabled={true} onClick={() => handleFetch("get_from_test_set")}>
                         Upload Table
                     </Button>
                 </Flex>

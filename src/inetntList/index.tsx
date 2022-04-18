@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil"
 import IntentObject from "./intentObject"
 
 
-export default function IndentList({ minH }: any) {
+export default function IntentList({ minH }: any) {
     const [intents, setIntents] = useRecoilState(selectedIntentsState)
 
 
@@ -14,7 +14,7 @@ export default function IndentList({ minH }: any) {
             <VStack spacing={4} align="left">
                 <Flex verticalAlign={"center"}>
                     <Heading mt={1} fontSize="xl">
-                        Selected Indent
+                        Selected Intent
                     </Heading>
                     <Spacer />
                 </Flex>

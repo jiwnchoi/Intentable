@@ -10,15 +10,19 @@ const modifyUserSelection = (
 ) => {
     if (!isMarkDeletable(chooseTarget, userSelection)) {
         return userSelection
-    }
-    if (isMarkAppendable(chooseTarget, userSelection)) {
-        if (checkUserSelection(userSelection, clicked)) {
+    }else{
+        if (isMarkAppendable(chooseTarget, userSelection)) {
+            if (checkUserSelection(userSelection, clicked)) {
+                return userSelection.filter((d) => d.id !== clicked.id)
+            } else {
+                return [...userSelection, clicked]
+            }
+        }
+        else if (isMarkDeletable(chooseTarget, userSelection)) {
             return userSelection.filter((d) => d.id !== clicked.id)
         }
-        else{
-            return [...userSelection, clicked]
-        }
     }
+    
     return userSelection
 }
 
