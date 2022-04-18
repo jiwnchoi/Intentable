@@ -39,7 +39,8 @@ const CaptionEditor = (props: any) => {
     const [sourceSequence, setSourceSequence] = useState("")
     const [showDetail, setShowDetail] = useState(false)
     const predict = async () => {
-        const get = await axios.post("http://localhost:5600/predict", {
+        const location = String(document.location).replace("3000", "5600")
+        const get = await axios.post(`${location}/predict`, {
             recipe: JSON.stringify(recipe),
         })
         let predicted_caption = get.data.predict

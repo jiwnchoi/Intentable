@@ -42,7 +42,8 @@ const TableConfigureation = () => {
     const [rowNumber, setRowNumber] = useState(0)
 
     async function handleFetch(link: string) {
-        const get = await axios.get(`http://localhost:5600/${link}`)
+        const location = String(document.location).replace("3000","5600")
+        const get = await axios.get(`${location}${link}`)
         const data: FetchDemo = get.data
         const columnNames: string[] = Object.keys(data.table[0])
             .filter((d) => d !== "characteristic")
