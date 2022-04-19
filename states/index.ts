@@ -1,5 +1,5 @@
 import { atom } from "recoil"
-import { chartType, SelectedIntent, SelectedTarget, TargetTable } from "../types"
+import { ChartType, SelectedIntent, SelectedTarget, TargetTable } from "../types"
 
 export const tableTitleState = atom({
     key: "tableTitle",
@@ -11,7 +11,7 @@ export const tableValueInfoState = atom({
     default: "",
 })
 
-export const chartTypeState = atom<chartType>({
+export const chartTypeState = atom<ChartType>({
     key: "chartType",
     default: "bar",
 })
