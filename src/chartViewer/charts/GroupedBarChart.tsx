@@ -34,7 +34,7 @@ export default function GroupedBarChart({ xScale, yScale, xMax, yMax, margins }:
                 data={tableData}
                 keys={seriesList}
                 height={yMax}
-                x0={(d) => d.characteristic}
+                x0={(d) => d.key}
                 x0Scale={xScale}
                 x1Scale={barScle}
                 yScale={yScale}

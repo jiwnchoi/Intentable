@@ -23,7 +23,7 @@ export default function SimpleBarChart({ xMax, yMax, margins }: ChartProps) {
         [targetTable]
     )
     const xCenter = xMax / 2
-    const yCenter = yMax / 2
+    const yCenter = (yMax + margins.bottom) / 2
 
     return (
         <Group top={yCenter} left={xCenter}>

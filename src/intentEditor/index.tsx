@@ -111,11 +111,9 @@ const intentEditor = () => {
         else return true
     }
     return (
-        <Box p={6}>
+        <Box>
             <VStack spacing={4} align="left">
                 <Heading fontSize="xl">Intent Editor</Heading>
-                <Divider />
-
                 <Flex gap={2}>
                     <Button
                         leftIcon={<SummarizeOutlinedIcon />}
@@ -165,7 +163,6 @@ const intentEditor = () => {
                         Trends
                     </Button>
                 </Flex>
-                <Divider />
                 {actionClicked !== "none" ? (
                     <IntentObject
                         intent={new SelectedIntent(actionClicked as ActionType)}

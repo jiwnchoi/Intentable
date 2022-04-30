@@ -15,7 +15,7 @@ import {
     VStack,
 } from "@chakra-ui/react"
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 import {
     chartTypeState,
@@ -25,9 +25,12 @@ import {
     tableTitleState,
     tableValueInfoState,
     targetTableState,
-    goldenRecipeState
+    goldenRecipeState,
+    targetTableLoadedState,
 } from "../../states"
-import { Features, FetchDemo, SelectedTarget, TargetTable } from "../../types"
+import { Features, FetchDemo, FetchTableType, SelectedTarget, TargetTable } from "../../types"
+import { apiLink } from "../util/config"
+import { csv2table } from "../util/csv2table"
 
 const TableConfigureation = () => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState)
@@ -38,15 +41,43 @@ const TableConfigureation = () => {
     const [goldenCaption, setGoldenCaption] = useRecoilState(goldenCaptionState)
     const [targetTable, setTargetTable] = useRecoilState(targetTableState)
     const [goldenRecipe, setGoldenRecipe] = useRecoilState(goldenRecipeState)
+    const [targetTableLoaded, setTargetTableLoaded] = useRecoilState(targetTableLoadedState)
     const [columnNumber, setColumnNumber] = useState(0)
     const [rowNumber, setRowNumber] = useState(0)
 
+    const [file, setFile] = useState()
+    const [csv, setCSV] = useState<string>("")
+    const fileReader = new FileReader()
+
+    const handleCSV = (e: any) => {
+        if (e.target.files[0]) {
+            fileReader.onload = () => {
+                setCSV(fileReader.result as string)
+            }
+            fileReader.readAsText(e.target.files[0])
+        }
+    }
+    
+    useEffect(() => {
+        if(csv){
+            const table = csv2table(csv);
+            setTargetTable(getTargetTable(table as FetchTableType[]));
+            setTargetTableLoaded(true)
+        }
+    }, [csv])
+
+    const handleRead = (e: any) => {
+        document.getElementById("csv-file")?.click()
+
+    }
+
     async function handleFetch(link: string) {
-        
-        const get = await axios.get(`/${link}`)
+        const get = await axios.get(`${apiLink}/${link}`)
+        setTargetTableLoaded(true)
         const data: FetchDemo = get.data
+        console.log(data.table)
         const columnNames: string[] = Object.keys(data.table[0])
-            .filter((d) => d !== "characteristic")
+            .filter((d) => d !== "key")
             .map((d) => String(d))
         setGoldenRecipe(data.recipe)
         setRowNumber(data.table.length)
@@ -57,13 +88,17 @@ const TableConfigureation = () => {
         setValueInfo(data.recipe.unit)
         setRowType(data.row_type)
         setSelectedIntents([])
+        setTargetTable(getTargetTable(data.table))
 
+       
+    }
+    function getTargetTable(table : FetchTableType[]) {
         const targetTable: TargetTable = {}
-
+        const columnNames = Object.keys(table[0]).filter((d) => d !== "key")
         const featureTable: { [series: string]: Features } = {}
         for (const columnName of columnNames) {
             // Calculating Column-wise Feature
-            const values = data.table.map((d) => d[columnName])
+            const values = table.map((d) => d[columnName])
 
             const max = values.reduce((a, b) => {
                 return a > b ? a : (b as number)
@@ -74,14 +109,14 @@ const TableConfigureation = () => {
             featureTable[columnName] = {
                 max: max as number,
                 min: min as number,
-                recent: String(data.table[data.table.length - 1].characteristic),
-                past: String(data.table[0].characteristic),
+                recent: String(table[table.length - 1].key),
+                past: String(table[0].key),
             }
             // Converting to Selected Target
-            for (const row of data.table) {
+            for (const row of table) {
                 const value = row[columnName] as number
                 const series = columnName
-                const key = String(row["characteristic"])
+                const key = String(row["key"])
 
                 const target = new SelectedTarget(value, key, series)
 
@@ -109,14 +144,19 @@ const TableConfigureation = () => {
                 }
             }
         }
-        setTargetTable(targetTable)
+        return targetTable
     }
-
     return (
-        <Box p={6}>
+        <Box>
+            <input
+                type={"file"}
+                id={"csv-file"}
+                accept={".csv"}
+                onChange={handleCSV}
+                style={{ display: "none" }}
+            />
             <VStack spacing={4} align="left">
-                <Heading fontSize="xl">Table Configuration</Heading>
-                <Divider />
+                <Heading fontSize="xl">Recipe Configuration</Heading>
                 <Flex w="full">
                     <Button
                         mr={1}
@@ -128,7 +168,7 @@ const TableConfigureation = () => {
                         Load Random Demo
                     </Button>
                     <Spacer />
-                    <Button ml={1} w="full" disabled={true} onClick={() => handleFetch("get_from_test_set")}>
+                    <Button ml={1} w="full" disabled={false} onClick={handleRead}>
                         Upload Table
                     </Button>
                 </Flex>

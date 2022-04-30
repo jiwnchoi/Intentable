@@ -10,15 +10,12 @@ export default function IntentList({ minH }: any) {
 
 
     return (
-        <Box p={6} minH={minH}>
+        <Box mt={4} minH={minH}>
             <VStack spacing={4} align="left">
                 <Flex verticalAlign={"center"}>
-                    <Heading mt={1} fontSize="xl">
-                        Selected Intent
-                    </Heading>
+                        Created Intents
                     <Spacer />
                 </Flex>
-                <Divider />
                 {intents.map((intent: SelectedIntent) => (
                     <IntentObject key={intent.id} intent={intent} />
                 ))}

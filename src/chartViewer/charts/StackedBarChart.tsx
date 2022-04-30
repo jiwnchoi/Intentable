@@ -30,7 +30,7 @@ export default function SimpleBarChart({ xScale, yScale, xMax, yMax, margins }: 
         <BarStack
             data={tableData}
             keys={seriesList}
-            x={(d) => d.characteristic}
+            x={(d) => d.key}
             xScale={xScale}
             yScale={yScale}
             color={colorScheme}

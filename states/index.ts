@@ -60,3 +60,13 @@ export const targetTableState = atom<TargetTable>({
     key: "targetTable",
     default: { value: [] },
 })
+
+export const targetTableLoadedState = atom({
+    key: "targetTableLoaded",
+    default: false,
+})
+
+export const displayChartState = atom({
+    key: "displayChart",
+    default: false,
+})

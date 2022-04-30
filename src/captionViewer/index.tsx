@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Center,
     Divider,
     Flex,
     Grid,
@@ -62,77 +63,54 @@ const CaptionEditor = (props: any) => {
     }, [chartType, tableTitle, valueInfo, targetTable, selectedIntents])
 
     return (
-        <Box p={6}>
+        <Box p={4}>
             <VStack spacing={4} align="left">
-                <Flex verticalAlign={"center"} gap={2}>
-                    <Heading mt={1} fontSize="xl">
-                        Caption
-                    </Heading>
-                    <Spacer />
-                    <Button size={"sm"} onClick={() => setShowDetail(!showDetail)}>
-                        {showDetail ? "Hide Details" : "Show Details"}
-                    </Button>
-                    <Button
-                        bg="gray.500"
-                        color="white"
-                        size={"sm"}
-                        onClick={predict}
-                        disabled={selectedIntents.length === 0 ? true : false}
-                    >
-                        Generate Captions
-                    </Button>
-                </Flex>
-                <Divider />
                 <Grid w="full" h="full" gap={8} templateColumns={"repeat(2, 1fr)"}>
-                    <GridItem w="full" colSpan={showDetail ? 1 : 2}>
-                        {showDetail ? (
-                            <>
-                                <Heading fontSize="lg" mb={2}>
-                                    Predicted Caption
-                                </Heading>
-                            </>
-                        ) : null}
-
-                        {caption ? caption : `Select intent and press "Genretate Captions" button!`}
+                    <GridItem w="full" colSpan={1}>
+                        <Heading fontSize="lg" mb={4}>
+                            Predicted Caption
+                        </Heading>
+                        {caption ? (
+                            caption
+                        ) : (
+                            <Center minH={200} textAlign="center">
+                                Create intents and press Generate Caption button!
+                            </Center>
+                        )}
                     </GridItem>
-                    {showDetail ? (
-                        <>
-                            <GridItem w="full">
-                                <Heading fontSize="lg" mb={2}>
-                                    Recipe
-                                </Heading>
-                                <Textarea
-                                    minH={300}
-                                    resize={"none"}
-                                    value={
-                                        recipe ? JSON.stringify(recipe, undefined, 2) : "No recipe"
-                                    }
-                                    readOnly={true}
-                                />
-                            </GridItem>
-                            <GridItem w="full">
-                                <Heading fontSize="lg" mb={2}>
-                                    Golden Caption
-                                </Heading>
-                                {goldenCaption ? goldenCaption : "No golden caption"}
-                            </GridItem>
-                            <GridItem w="full">
-                                <Heading fontSize="lg" mb={2}>
-                                    Golden Recipe
-                                </Heading>
-                                <Textarea
-                                    minH={300}
-                                    resize={"none"}
-                                    value={
-                                        goldenRecipe
-                                            ? JSON.stringify(goldenRecipe, undefined, 2)
-                                            : "No recipe"
-                                    }
-                                    readOnly={true}
-                                />
-                            </GridItem>
-                        </>
-                    ) : null}
+                    <GridItem w="full">
+                        <Heading fontSize="lg" mb={2}>
+                            Recipe
+                        </Heading>
+                        <Textarea
+                            minH={273}
+                            resize={"none"}
+                            value={recipe ? JSON.stringify(recipe, undefined, 2) : "No recipe"}
+                            readOnly={true}
+                            border="0"
+                        />
+                    </GridItem>
+                    {/* <GridItem w="full">
+                        <Heading fontSize="lg" mb={2}>
+                            Golden Caption
+                        </Heading>
+                        {goldenCaption ? goldenCaption : "No golden caption"}
+                    </GridItem>
+                    <GridItem w="full">
+                        <Heading fontSize="lg" mb={2}>
+                            Golden Recipe
+                        </Heading>
+                        <Textarea
+                            minH={200}
+                            resize={"none"}
+                            value={
+                                goldenRecipe
+                                    ? JSON.stringify(goldenRecipe, undefined, 2)
+                                    : "No recipe"
+                            }
+                            readOnly={true}
+                        />
+                    </GridItem> */}
                 </Grid>
             </VStack>
         </Box>

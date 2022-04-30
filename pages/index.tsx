@@ -8,7 +8,6 @@ const Home: NextPage = () => {
     return (
         <Box minHeight="100vh" bg="gray.50" pb={120}>
             <Navbar />
-            <Divider />
             <Center>
                 <Dashboard></Dashboard>
             </Center>

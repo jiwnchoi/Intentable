@@ -51,17 +51,18 @@ const IntentObject = ({
 
     return (
         <Box
-            minH={81}
-            p={3}
+            minH={35}
+            p={2}
             w={"full"}
             bg={"gray.100"}
             borderRadius={8}
             onClick={() => removeIntent(intent)}
         >
             <Flex
-                minH={55}
+                minH={35}
                 h={"full"}
                 gap={1}
+                ml={1}
                 overflowX="scroll"
                 justifyContent={"center"}
                 alignItems="center"
@@ -75,7 +76,7 @@ const IntentObject = ({
                     {renderTargets.map((target: SelectedTarget, i: number) => (
                         <GridItem
                             w={"full"}
-                            p={2}
+                            p={1}
                             h={"fit-content"}
                             bg={colorScheme(
                                 colorKey === "series" ? target.series ?? "" : target.key
@@ -87,7 +88,7 @@ const IntentObject = ({
                         >
                             <VStack w="100%">
                                 <Text
-                                    fontSize="xs"
+                                    fontSize="8"
                                     lineHeight={1}
                                     w={150}
                                     overflow={"hidden"}
@@ -97,7 +98,7 @@ const IntentObject = ({
                                 >
                                     {getFirstCaptital(target.key)}
                                 </Text>
-                                <Heading fontSize="md" lineHeight={1}>
+                                <Heading fontSize={13} lineHeight={1}>
                                     {target.value}
                                 </Heading>
                             </VStack>

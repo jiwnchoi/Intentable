@@ -14,7 +14,7 @@ const transposeTable = (table : TargetTable) => {
             row[seriesName] = target.value
             rowTargets.push(target)    
         }
-        row["characteristic"] = key
+        row["key"] = key
         row["targets"] = rowTargets
         
         transposeTable.push(row)

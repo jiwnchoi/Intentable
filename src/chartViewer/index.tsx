@@ -1,31 +1,35 @@
-import { Box, VStack, Divider, Heading, Center, Text } from "@chakra-ui/react"
-import { tableTitleState,  targetTableState } from "../../states"
+import { Box, VStack, Heading, Center, Text } from "@chakra-ui/react"
+import { tableTitleState, targetTableLoadedState, tableValueInfoState } from "../../states"
 import { useRecoilState } from "recoil"
 
 import ParentSize from "@visx/responsive/lib/components/ParentSize"
 
 import Chart from "./ChartAxis"
 
-const chartHeight = 400
+const chartHeight = 200
 
 const ChartRenderer = ({ minH }: any) => {
     const [tableTitle, setTableTitle] = useRecoilState(tableTitleState)
-    const [tableData, setTableData] = useRecoilState(targetTableState)
+    const [targetTableLoaded, setTargetTableLoaded] = useRecoilState(targetTableLoadedState)
+    const [valueInfo, setValueInfo] = useRecoilState(tableValueInfoState)
+
     return (
-        <Box p={6} w="full" minH={minH}>
+        <Box p={4} w="full" minH={minH}>
             <VStack spacing={4} w="full" align="left">
                 <Heading fontSize="xl">Chart</Heading>
-                <Divider />
-                <Center>
-                    <Heading fontSize={"xl"}>{tableTitle}</Heading>
-                </Center>
-                {!(tableData.value && tableData.value.length === 0) ? (
-                    <ParentSize>
-                        {({ width, height }) => <Chart width={width} height={chartHeight} />}
-                    </ParentSize>
+                {targetTableLoaded && tableTitle !== "" && valueInfo !== "" ? (
+                    <>
+                        <Center>
+                            <Heading fontSize={"xl"}>{tableTitle}</Heading>
+                        </Center>
+
+                        <ParentSize>
+                            {({ width, height }) => <Chart width={width} height={chartHeight} />}
+                        </ParentSize>
+                    </>
                 ) : (
-                    <Center minH={300}>
-                        <Text fontSize={"xl"}>Please import data or load Demo!</Text>
+                    <Center minH={200}>
+                        <Text fontSize={"xl"}>Please load table!</Text>
                     </Center>
                 )}
             </VStack>
@@ -34,3 +38,4 @@ const ChartRenderer = ({ minH }: any) => {
 }
 
 export default ChartRenderer
+
