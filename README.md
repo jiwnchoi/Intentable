@@ -5,12 +5,17 @@
 
 # Live Demo
 
-TBA
+[Youtube](https://www.youtube.com/watch?v=orO9gi0clcc)
 
 # Reference
 
 Jiwon Choi and Jaemin Jo "Intentable: A Mixed-Initiative System for Intent-Based Chart Captioning" 
 Accepted in IEEE Visualization 2022
+
+[- Paper](https://github.com/Jason-Choi/Intentable/files/9109833/Intentable_A.Mixed-Initiative.System.for.I
+[- Supplementary Material](https://github.com/Jason-Choi/Intentable/files/9109835/Intentable_Supplemental_Material.zip)
+ntent-Based.Chart.Captioning.pdf)
+
 
 # Run & Development
 
