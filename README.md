@@ -16,8 +16,20 @@ Jiwon Choi and Jaemin Jo
 Proceedings of IEEE VIS 2022 (IEEE VIS 2022 Short), pp. 1-1 (to appear), Oklahoma City, USA, 2022.
 
 - [Paper](https://github.com/Jason-Choi/Intentable/files/9109841/Intentable_A.Mixed-Initiative.System.for.Intent-Based.Chart.Captioning.pdf)
-- [Supplementary Material](https://github.com/Jason-Choi/Intentable/files/9109835/Intentable_Supplemental_Material.zip)
 
 # Run & Development
 
 TBA
+
+# Citation
+
+```
+@inproceedings{choi2022intentable,
+  title={Intentable: A Mixed-Initiative System for Intent-Based Chart Captioning},
+  author={Choi, Jiwon and Jo, Jaemin},
+  booktitle={2022 IEEE Visualization and Visual Analytics (VIS)},
+  pages={40--44},
+  year={2022},
+  organization={IEEE}
+}
+```
